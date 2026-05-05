@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "./InvestmentStrategy.css";
 import useInvestmentProfile from "../hooks/useInvestmentProfile";
 
@@ -95,8 +95,23 @@ const PROFILE_DETAILS = {
   },
 };
 
+const PROFILE_COLORS = {
+  Conservative: { bg: "rgba(6, 182, 212, 0.12)", color: "#06b6d4" },
+  Moderate: { bg: "rgba(245, 158, 11, 0.12)", color: "#f59e0b" },
+  Aggressive: { bg: "rgba(239, 68, 68, 0.12)", color: "#ef4444" },
+};
+
+const ALLOC_COLORS = {
+  bonds: "#3b82f6",
+  equities: "#10b981",
+  cash: "#f59e0b",
+};
+
 export default function InvestmentStrategy() {
   const [answers, setAnswers] = useState({});
+  const [showWizard, setShowWizard] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [celebrate, setCelebrate] = useState(false);
   const {
     data: riskProfile,
     isLoading,
@@ -115,16 +130,45 @@ export default function InvestmentStrategy() {
   );
 
   const isComplete = answeredCount === QUESTIONS.length;
+  const currentQuestion = QUESTIONS[currentStep];
+  const isStepAnswered = currentQuestion
+    ? answers[currentQuestion.id] !== undefined
+    : false;
+  const progressValue = showWizard
+    ? Math.min(currentStep + 1, QUESTIONS.length)
+    : answeredCount;
+  const progressPercent = (progressValue / QUESTIONS.length) * 100;
 
   const handleAnswer = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!isComplete) return;
+  const handleStart = () => {
+    setShowWizard(true);
+    setCurrentStep(0);
+  };
 
+  const handleExit = () => {
+    setShowWizard(false);
+  };
+
+  const handlePrev = () => {
+    if (currentStep === 0) return;
+    setCurrentStep((prev) => prev - 1);
+  };
+
+  const handleNext = () => {
+    if (!isStepAnswered || isLoading) return;
+
+    if (currentStep < QUESTIONS.length - 1) {
+      setCurrentStep((prev) => prev + 1);
+      return;
+    }
+
+    if (!isComplete) return;
     submitAssessment(answers);
+    setShowWizard(false);
+    setCelebrate(true);
   };
 
   const handleReset = () => {
@@ -132,220 +176,319 @@ export default function InvestmentStrategy() {
     resetProfile();
   };
 
+  useEffect(() => {
+    if (!celebrate) return;
+    const timeoutId = setTimeout(() => setCelebrate(false), 1600);
+    return () => clearTimeout(timeoutId);
+  }, [celebrate]);
+
   const hasProfile = Boolean(riskProfile?.profile);
+  const canReset = answeredCount > 0 || hasProfile;
   const profileDetails = hasProfile
     ? PROFILE_DETAILS[riskProfile.profile]
     : null;
+  const displayScore = showWizard
+    ? totalScore
+    : hasProfile
+    ? riskProfile.score
+    : 0;
+  const profileConfig = hasProfile
+    ? PROFILE_COLORS[riskProfile.profile]
+    : PROFILE_COLORS.Moderate;
 
   return (
     <div className="strategy-page">
-      <div className="container py-5">
-        <div className="strategy-hero shadow-sm">
-          <div>
-            <span className="strategy-badge">Risk Assessment</span>
-            <h1 className="strategy-title">Investment Strategy</h1>
-            <p className="strategy-subtitle">
-              Complete the 6-question assessment to reveal a recommended
-              allocation mix. This is a front-end prototype only.
-            </p>
-            <div className="strategy-meta">
-              <span>6 questions</span>
-              <span>2 minutes</span>
-              <span>Score range 0-30</span>
-            </div>
-          </div>
-          <div className="strategy-scorecard">
-            <div className="strategy-score">
-              <span>Answered</span>
-              <strong>
-                {answeredCount}/{QUESTIONS.length}
-              </strong>
-            </div>
-            <div className="strategy-meter">
-              <span
-                style={{
-                  width: `${(answeredCount / QUESTIONS.length) * 100}%`,
-                }}
-              />
+      {celebrate && (
+        <div className="celebration-overlay" aria-hidden="true">
+          <span className="confetti confetti-1" />
+          <span className="confetti confetti-2" />
+          <span className="confetti confetti-3" />
+          <span className="confetti confetti-4" />
+          <span className="confetti confetti-5" />
+          <span className="confetti confetti-6" />
+        </div>
+      )}
+      <div className="dashboard-greeting mb-4 animate-fade-in-up">
+        <h1>Investment Strategy</h1>
+        <p>Assess your risk tolerance to generate a suggested allocation mix.</p>
+      </div>
+
+      <div className="row g-4">
+        <div className="col-12 col-xl-7">
+          <div
+            className="glass-card h-100 animate-fade-in-up"
+            style={{ "--animation-order": 0 }}
+          >
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h6 className="stat-label mb-2">Risk Profile</h6>
+                  <h5 className="mb-1">
+                    {showWizard
+                      ? "Survey in progress"
+                      : hasProfile
+                      ? "Summary"
+                      : "No profile yet"}
+                  </h5>
+                  <p className="text-muted small mb-0">
+                    {showWizard
+                      ? "Answer one question at a time."
+                      : hasProfile
+                      ? "Your latest assessment result."
+                      : "Start the survey to generate your summary."}
+                  </p>
+                </div>
+                <span className="text-muted small">Score: {displayScore}/30</span>
+              </div>
+
+              {showWizard ? (
+                <>
+                  <div className="strategy-question mb-3">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                      <span className="text-muted small">
+                        Question {currentStep + 1} of {QUESTIONS.length}
+                      </span>
+                      <span className="badge bg-light text-dark">0-5 pts</span>
+                    </div>
+                    <h5 className="mb-3">{currentQuestion.title}</h5>
+                    <div className="strategy-options">
+                      {currentQuestion.options.map((option) => {
+                        const optionId = `${currentQuestion.id}-${option.value}`;
+                        const isActive =
+                          answers[currentQuestion.id] === option.value;
+
+                        return (
+                          <label
+                            key={option.label}
+                            htmlFor={optionId}
+                            className={`strategy-option ${
+                              isActive ? "is-active" : ""
+                            }`}
+                          >
+                            <input
+                              id={optionId}
+                              className="form-check-input"
+                              type="radio"
+                              name={currentQuestion.id}
+                              checked={isActive}
+                              onChange={() =>
+                                handleAnswer(currentQuestion.id, option.value)
+                              }
+                            />
+                            <span>{option.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="progress strategy-progress">
+                    <div
+                      className="progress-bar"
+                      role="progressbar"
+                      style={{ width: `${progressPercent}%` }}
+                      aria-valuenow={progressPercent}
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    />
+                  </div>
+
+                  <div className="strategy-wizard-actions mt-3">
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={handlePrev}
+                      disabled={currentStep === 0 || isLoading}
+                    >
+                      Back
+                    </button>
+                    <div className="d-flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className="btn btn-link strategy-link-btn"
+                        onClick={handleExit}
+                        disabled={isLoading}
+                      >
+                        Exit
+                      </button>
+                      <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={handleNext}
+                        disabled={!isStepAnswered || isLoading}
+                      >
+                        {currentStep === QUESTIONS.length - 1
+                          ? isLoading
+                            ? "Generating..."
+                            : "Finish & View Summary"
+                          : "Next"}
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : !hasProfile ? (
+                <>
+                  <div className="strategy-empty-state mb-4">
+                    <div className="strategy-empty-icon">🧭</div>
+                    <div>
+                      <div className="fw-semibold mb-1">Start your survey</div>
+                      <p className="text-muted small mb-0">
+                        Answer six questions to unlock your profile and
+                        allocation summary.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="strategy-info-grid">
+                    <div className="strategy-info-item">
+                      <span>Questions</span>
+                      <strong>6 total</strong>
+                    </div>
+                    <div className="strategy-info-item">
+                      <span>Estimated time</span>
+                      <strong>2 minutes</strong>
+                    </div>
+                    <div className="strategy-info-item">
+                      <span>Score range</span>
+                      <strong>0 to 30</strong>
+                    </div>
+                  </div>
+                  <div className="d-flex flex-wrap gap-2 mt-3">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleStart}
+                    >
+                      Start survey
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={handleReset}
+                      disabled={!canReset}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="d-flex align-items-center gap-3 mb-3">
+                    <span
+                      className="badge-profile animate-pulse-glow"
+                      style={{
+                        background: profileConfig.bg,
+                        color: profileConfig.color,
+                        border: `1px solid ${profileConfig.color}20`,
+                      }}
+                    >
+                      {riskProfile.profile}
+                    </span>
+                    <span className="text-muted small">
+                      Score: {riskProfile.score}/30
+                    </span>
+                  </div>
+
+                  <div className="allocation-bar mb-3">
+                    {Object.entries(riskProfile.allocation).map(
+                      ([key, value]) => (
+                        <div
+                          key={key}
+                          className="allocation-bar__segment"
+                          style={{
+                            width: `${value}%`,
+                            backgroundColor: ALLOC_COLORS[key],
+                          }}
+                        />
+                      )
+                    )}
+                  </div>
+
+                  <div className="d-flex justify-content-between flex-wrap gap-2">
+                    {Object.entries(riskProfile.allocation).map(
+                      ([key, value]) => (
+                        <div key={key} className="text-center">
+                          <div
+                            className="d-inline-block rounded-circle me-1"
+                            style={{
+                              width: 8,
+                              height: 8,
+                              backgroundColor: ALLOC_COLORS[key],
+                            }}
+                          />
+                          <span
+                            className="text-muted text-capitalize"
+                            style={{ fontSize: "0.75rem" }}
+                          >
+                            {key} {value}%
+                          </span>
+                        </div>
+                      )
+                    )}
+                  </div>
+
+                  <div className="strategy-profile-copy mt-3">
+                    <strong>{profileDetails.title}</strong>
+                    <span>{profileDetails.summary}</span>
+                  </div>
+
+                  <div className="strategy-note">
+                    Backend integration will replace this client-side scoring.
+                  </div>
+
+                  <div className="d-flex flex-wrap gap-2 mt-3">
+                    <button
+                      type="button"
+                      className="btn btn-primary"
+                      onClick={handleStart}
+                    >
+                      Retake survey
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary"
+                      onClick={handleReset}
+                      disabled={!canReset}
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
 
-        <div className="row g-4 mt-3">
-          <div className="col-12 col-lg-7">
-            <form className="strategy-card" onSubmit={handleSubmit}>
-              <div className="d-flex justify-content-between align-items-center mb-3">
-                <h2 className="mb-0">Risk Profile Questionnaire</h2>
-                <span className="text-muted small">
-                  Score: {totalScore}/30
-                </span>
-              </div>
-              <p className="strategy-helper">
-                Select one response per question. Your score maps to a profile
-                and allocation blueprint.
-              </p>
-
-              {QUESTIONS.map((question, index) => (
-                <div key={question.id} className="strategy-question mb-3">
-                  <div className="d-flex justify-content-between align-items-start">
-                    <p className="mb-2 fw-semibold">
-                      {index + 1}. {question.title}
-                    </p>
-                    <span className="badge bg-light text-dark">
-                      0-5 pts
-                    </span>
-                  </div>
-                  <div>
-                    {question.options.map((option) => (
-                      <div className="form-check" key={option.label}>
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name={question.id}
-                          id={`${question.id}-${option.value}`}
-                          checked={answers[question.id] === option.value}
-                          onChange={() =>
-                            handleAnswer(question.id, option.value)
-                          }
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`${question.id}-${option.value}`}
-                        >
-                          {option.label}
-                        </label>
-                      </div>
-                    ))}
-                  </div>
+        <div className="col-12 col-xl-5">
+          <div
+            className="glass-card h-100 animate-fade-in-up"
+            style={{ "--animation-order": 1 }}
+          >
+            <div className="card-body">
+              <h6 className="stat-label mb-3">Scoring Bands</h6>
+              <div className="strategy-band-list">
+                <div className="strategy-band-row">
+                  <span>0 - 10</span>
+                  <strong>Conservative</strong>
                 </div>
-              ))}
-
-              <div className="d-flex flex-wrap gap-2">
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={!isComplete || isLoading}
-                >
-                  {isLoading ? "Generating..." : "Generate Risk Profile"}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  onClick={handleReset}
-                >
-                  Reset
-                </button>
-                {!isComplete && (
-                  <span className="text-muted small d-flex align-items-center">
-                    Complete all questions to unlock your profile.
-                  </span>
-                )}
-              </div>
-            </form>
-          </div>
-
-          <div className="col-12 col-lg-5">
-            {!hasProfile ? (
-              <div className="strategy-card strategy-empty">
-                <h2>Finish the assessment</h2>
-                <p className="strategy-empty-text">
-                  Answer all six questions to see your profile, score, and the
-                  asset split.
-                </p>
-                <div className="strategy-list">
-                  <div>Profile label and score band</div>
-                  <div>Asset split for bonds, equities, cash</div>
-                  <div>Client-side preview for backend payload</div>
+                <div className="strategy-band-row">
+                  <span>11 - 20</span>
+                  <strong>Moderate</strong>
                 </div>
-                <div className="strategy-band mt-3">
-                  <div>
-                    <span>0 - 10</span>
-                    <strong>Conservative</strong>
-                  </div>
-                  <div>
-                    <span>11 - 20</span>
-                    <strong>Moderate</strong>
-                  </div>
-                  <div>
-                    <span>21 - 30</span>
-                    <strong>Aggressive</strong>
-                  </div>
+                <div className="strategy-band-row">
+                  <span>21 - 30</span>
+                  <strong>Aggressive</strong>
                 </div>
               </div>
-            ) : (
-              <div className="strategy-card">
-                <div className="d-flex justify-content-between align-items-center">
-                  <h2 className="mb-0">Your Risk Profile</h2>
-                  <span className="strategy-profile-tag">
-                    {riskProfile.profile}
-                  </span>
-                </div>
-                <p className="text-muted mt-2">
-                  Total score: <strong>{riskProfile.score}</strong> out of 30
-                </p>
-                <div className="strategy-profile-copy">
-                  <strong>{profileDetails.title}</strong>
-                  <span>{profileDetails.summary}</span>
-                </div>
 
-                <div className="strategy-allocation">
-                  <div>
-                    <div className="d-flex justify-content-between">
-                      <span>Bonds</span>
-                      <strong>{riskProfile.allocation.bonds}%</strong>
-                    </div>
-                    <div className="progress">
-                      <div
-                        className="progress-bar bg-info"
-                        role="progressbar"
-                        style={{ width: `${riskProfile.allocation.bonds}%` }}
-                        aria-valuenow={riskProfile.allocation.bonds}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="d-flex justify-content-between">
-                      <span>Equities</span>
-                      <strong>{riskProfile.allocation.equities}%</strong>
-                    </div>
-                    <div className="progress">
-                      <div
-                        className="progress-bar bg-primary"
-                        role="progressbar"
-                        style={{ width: `${riskProfile.allocation.equities}%` }}
-                        aria-valuenow={riskProfile.allocation.equities}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <div className="d-flex justify-content-between">
-                      <span>Cash</span>
-                      <strong>{riskProfile.allocation.cash}%</strong>
-                    </div>
-                    <div className="progress">
-                      <div
-                        className="progress-bar bg-warning"
-                        role="progressbar"
-                        style={{ width: `${riskProfile.allocation.cash}%` }}
-                        aria-valuenow={riskProfile.allocation.cash}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="strategy-note">
-                  Backend integration will replace this client-side scoring.
-                </div>
+              <div className="strategy-tips mt-4">
+                <h6 className="stat-label mb-2">How it works</h6>
+                <ul className="strategy-tips-list">
+                  <li>Each answer gives 0-5 points.</li>
+                  <li>Total score maps to a profile.</li>
+                  <li>Allocation is computed on the backend in Phase 2.</li>
+                </ul>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
