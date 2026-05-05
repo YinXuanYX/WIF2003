@@ -15,6 +15,8 @@ export default function App() {
         <Route element={<AppShell />}>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/strategy" element={<InvestmentStrategy />} />
+          <Route path="/cashflow" element={<CashFlowPage />} />
           <Route path="/calculator" element={<ROICalculator />} />
         </Route>
       </Routes>
