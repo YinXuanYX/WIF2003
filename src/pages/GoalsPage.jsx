@@ -77,6 +77,10 @@ function GoalsPage() {
     deleteGoal(id)
   }
 
+  const handleQuickSave = (id, newSavedAmount) => {
+    updateGoal(id, { savedAmount: newSavedAmount })
+  }
+
   // Show skeleton while cashflow is loading
   if (cashflowLoading) {
     return (
@@ -172,6 +176,7 @@ function GoalsPage() {
                 animationOrder={i}
                 onEdit={handleEditClick}
                 onDelete={handleDeleteClick}
+                onQuickSave={handleQuickSave}
               />
             </div>
           ))}

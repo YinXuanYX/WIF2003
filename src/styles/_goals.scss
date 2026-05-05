@@ -179,6 +179,93 @@
     background-color: rgba(var(--bs-danger-rgb), 0.1);
     color: var(--bs-danger);
   }
+
+  &--save:hover {
+    background-color: rgba(var(--bs-success-rgb), 0.1);
+    color: var(--bs-success);
+  }
+}
+
+// Quick Save inline panel
+.quick-save {
+  margin-top: 1rem;
+  padding-top: 0.875rem;
+  border-top: 1px solid var(--bs-border-color, rgba(0, 0, 0, 0.08));
+  animation: slideInBanner 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  &__label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  &__input-row {
+    margin-bottom: 0.5rem;
+
+    .input-group {
+      border-radius: 0.5rem;
+      overflow: hidden;
+    }
+
+    .input-group-text {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      background-color: var(--bs-tertiary-bg, #f1f5f9);
+      border-color: var(--bs-border-color);
+    }
+
+    .form-control {
+      font-size: 0.875rem;
+    }
+
+    .btn {
+      font-weight: 600;
+      font-size: 0.8125rem;
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
+  }
+
+  &__suggestions {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    flex-wrap: wrap;
+  }
+
+  &__suggest-label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--bs-secondary-color, #{$text-muted});
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25em 0.625em;
+    border-radius: 2rem;
+    border: 1px solid var(--bs-border-color);
+    background: transparent;
+    color: var(--bs-success);
+    cursor: pointer;
+    transition: background-color 0.15s, transform 0.15s, border-color 0.15s;
+
+    &:hover {
+      background-color: rgba(var(--bs-success-rgb), 0.1);
+      border-color: var(--bs-success);
+      transform: scale(1.05);
+    }
+  }
 }
 
 // Summary card at the bottom
@@ -333,5 +420,13 @@
 
   .goal-badge--completed {
     background-color: rgba(var(--bs-success-rgb), 0.15);
+  }
+
+  .quick-save {
+    border-top-color: #334155;
+
+    &__chip {
+      border-color: #475569;
+    }
   }
 }
