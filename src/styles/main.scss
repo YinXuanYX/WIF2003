@@ -1,59 +1,31 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+// ============================================================
+// Main SCSS Entry File
+// PRD §2.3: Raw Bootstrap SCSS compiled with custom variable
+// overrides. This file is the evidence of SCSS compilation.
+// ============================================================
 
-// Variable overrides (Light / "Executive Clarity")
-$font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
-  sans-serif;
-$font-family-base: $font-family-sans-serif;
+// 1. Load custom variable overrides (BEFORE Bootstrap)
+@import './variables';
 
-$body-bg: #f8fafc;
-$body-color: #0f172a;
-$card-bg: #ffffff;
-
-$primary: #2563eb;
-$success: #10b981;
-$danger: #ef4444;
-$warning: #f59e0b;
-$info: #06b6d4;
-
-$text-muted: #64748b;
-
-$card-border-radius: 1rem;
-$card-border-color: rgba(0, 0, 0, 0.06);
-$card-spacer-y: 1.25rem;
-$card-spacer-x: 1.5rem;
-$card-cap-padding-y: 1rem;
-$card-cap-bg: transparent;
-
-$border-radius: 0.75rem;
-$border-radius-lg: 1rem;
-$border-radius-sm: 0.5rem;
-
-$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
-$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-$box-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08),
-  0 2px 4px rgba(0, 0, 0, 0.04);
-
-$progress-height: 0.625rem;
-$progress-border-radius: 1rem;
-$progress-bg: #e2e8f0;
-
-$navbar-dark-color: rgba(255, 255, 255, 0.85);
-$navbar-dark-hover-color: #ffffff;
-
+// 2. Import full Bootstrap SCSS source
 @import "bootstrap/scss/bootstrap";
+
+// 3. Import custom animations
 @import "./animations";
 
-// Dark mode overrides ("Midnight Premium")
+// ============================================================
+// 4. Dark Mode Overrides ("Midnight Premium")
+// ============================================================
 [data-bs-theme="dark"] {
-  --bs-body-bg: #0f172a;
-  --bs-body-color: #f8fafc;
-  --bs-card-bg: #1e293b;
+  --bs-body-bg: #{$dark-body-bg};
+  --bs-body-color: #{$dark-body-color};
+  --bs-card-bg: #{$dark-card-bg};
   --bs-card-border-color: rgba(255, 255, 255, 0.06);
-  --bs-primary: #3b82f6;
+  --bs-primary: #{$dark-primary};
   --bs-primary-rgb: 59, 130, 246;
-  --bs-success: #34d399;
+  --bs-success: #{$dark-success};
   --bs-success-rgb: 52, 211, 153;
-  --bs-danger: #f87171;
+  --bs-danger: #{$dark-danger};
   --bs-danger-rgb: 248, 113, 113;
   --bs-secondary-bg: #1e293b;
   --bs-tertiary-bg: #162032;
@@ -61,7 +33,7 @@ $navbar-dark-hover-color: #ffffff;
   --bs-body-bg-rgb: 15, 23, 42;
 
   .text-muted {
-    color: #94a3b8 !important;
+    color: #{$dark-text-muted} !important;
   }
 
   .card {
@@ -122,6 +94,9 @@ $navbar-dark-hover-color: #ffffff;
   }
 }
 
+// ============================================================
+// 5. Global Custom Styles
+// ============================================================
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -129,6 +104,7 @@ body {
   letter-spacing: -0.011em;
 }
 
+// ── Dashboard utility classes ──
 .card-dashboard {
   border: 1px solid var(--bs-card-border-color, rgba(0, 0, 0, 0.06));
   border-radius: $card-border-radius;

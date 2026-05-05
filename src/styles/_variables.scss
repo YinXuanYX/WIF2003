@@ -3,21 +3,59 @@
 // These must be defined BEFORE importing Bootstrap's SCSS source.
 // ============================================================
 
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+
+// ── Typography ──
+$font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
+  sans-serif;
+$font-family-base: $font-family-sans-serif;
+
 // ── Light Mode ("Executive Clarity") ──
-$body-bg:    #F8FAFC;   // Soft Slate White
-$card-bg:    #FFFFFF;   // Pure White
-$primary:    #2563EB;   // Royal Blue
-$success:    #10B981;   // Vibrant Emerald Green
-$danger:     #EF4444;   // Crisp Red
-$body-color: #0F172A;   // Deep Slate (PRD: $text-color)
-$text-muted: #64748B;   // Cool Gray
+$body-bg: #f8fafc;     // Soft Slate White
+$body-color: #0f172a;  // Deep Slate
+$card-bg: #ffffff;     // Pure White
+
+$primary: #2563eb;     // Royal Blue
+$success: #10b981;     // Vibrant Emerald Green
+$danger: #ef4444;      // Crisp Red
+$warning: #f59e0b;
+$info: #06b6d4;
+
+$text-muted: #64748b;  // Cool Gray
+
+// ── Card & Border ──
+$card-border-radius: 1rem;
+$card-border-color: rgba(0, 0, 0, 0.06);
+$card-spacer-y: 1.25rem;
+$card-spacer-x: 1.5rem;
+$card-cap-padding-y: 1rem;
+$card-cap-bg: transparent;
+
+$border-radius: 0.75rem;
+$border-radius-lg: 1rem;
+$border-radius-sm: 0.5rem;
+
+// ── Shadows ──
+$box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+$box-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+$box-shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08),
+  0 2px 4px rgba(0, 0, 0, 0.04);
+
+// ── Progress ──
+$progress-height: 0.625rem;
+$progress-border-radius: 1rem;
+$progress-bg: #e2e8f0;
+
+// ── Navbar ──
+$navbar-dark-color: rgba(255, 255, 255, 0.85);
+$navbar-dark-hover-color: #ffffff;
 
 // ── Dark Mode custom properties ──
 // Applied via [data-bs-theme="dark"] on <html> or <body>
-$dark-body-bg:    #0F172A;   // Deep Midnight Slate
-$dark-card-bg:    #1E293B;   // Elevated Slate
-$dark-primary:    #3B82F6;   // Brighter Neon Blue
-$dark-success:    #34D399;   // Luminous Mint Green
-$dark-danger:     #F87171;   // Soft Coral Red
-$dark-body-color: #F8FAFC;   // Off-White
-$dark-text-muted: #94A3B8;   // Light Slate
+$dark-body-bg:    #0f172a;   // Deep Midnight Slate
+$dark-card-bg:    #1e293b;   // Elevated Slate
+$dark-primary:    #3b82f6;   // Brighter Neon Blue
+$dark-success:    #34d399;   // Luminous Mint Green
+$dark-danger:     #f87171;   // Soft Coral Red
+$dark-body-color: #f8fafc;   // Off-White
+$dark-text-muted: #94a3b8;   // Light Slate
