@@ -9,6 +9,7 @@ import MarketInsightsPage from "./pages/MarketInsightsPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
+import InvestmentStrategy from "./components/InvestmentStrategy";
 
 export default function App() {
   return (
@@ -24,6 +25,7 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/strategy" element={<InvestmentStrategy />} />
               <Route path="/cashflow" element={<CashFlowPage />} />
               <Route path="/market" element={<MarketInsightsPage />} />
               <Route path="/calculator" element={<CalculatorPage />} />
