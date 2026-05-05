@@ -42,6 +42,7 @@ $navbar-dark-hover-color: #ffffff;
 
 @import "bootstrap/scss/bootstrap";
 @import "./animations";
+@import "./goals";
 
 // Dark mode overrides ("Midnight Premium")
 [data-bs-theme="dark"] {
