@@ -142,6 +142,7 @@ export default function InvestmentStrategy() {
       <div className="container py-5">
         <div className="strategy-hero shadow-sm">
           <div>
+            <span className="strategy-badge">Risk Assessment</span>
             <h1 className="strategy-title">Investment Strategy</h1>
             <p className="strategy-subtitle">
               Complete the 6-question assessment to reveal a recommended
