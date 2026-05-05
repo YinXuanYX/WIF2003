@@ -1,0 +1,118 @@
+# Market Insights & Analysis Page (Module 5)
+
+This plan outlines the implementation of the Market Insights & Analysis Page (Phase 1 prototype) based on the PRD. The module displays a financial dashboard with crypto market trends using Chart.js and traditional stock equity quotes. It relies on mock JSON data simulating Finnhub and CoinGecko responses, utilizing TanStack Query for data fetching (simulated) and caching.
+
+PRD alignment notes:
+- Phase 1 uses mock files in `/src/mocks/` that replicate API response shapes exactly.
+- “Server” data is fetched through custom TanStack Query hooks (similar to existing hooks in the repo) so Phase 2 can swap the data source without rewriting UI components.
+- Finnhub-style `429 Too Many Requests` handling is explicitly supported with a 60s retry delay (as required by the PRD).
+
+## User Review Required
+
+- **Data Fetching Simulation**: Use the existing `simulateDelay()` helper (wraps `setTimeout`) inside TanStack Query query functions so loading placeholders render before data populates.
+- **Error States Simulation (Demo-safe)**: Avoid random failures during demos. Instead, support a deterministic trigger (no new UI):
+	- URL query param (recommended): `?simulate429=1` to force a Finnhub-style `429` error for equity quotes.
+	- Optional: `?simulateError=1` to force a generic network error for the crypto chart.
+	- Default behaviour remains “success”.
+
+## Open Questions
+
+- Confirm the default equity symbols. Proposed demo defaults: `AAPL` and `TSLA`.
+- Confirm the crypto asset. Proposed demo default: `bitcoin`.
+- Confirm whether you want mock files for Module 5 to be strict `.json` only (recommended to match “hardcoded JSON mock files”), or if `.js` mocks are acceptable.
+
+## Proposed Changes
+
+
+### Phase 1A — Mock Data (PRD shapes)
+
+We will add mock JSON files that match the PRD shapes *exactly*.
+
+CoinGecko `/coins/{id}/market_chart` shape:
+`{ "prices": [[timestamp, price], ...], "market_caps": [...], "total_volumes": [...] }`
+
+Finnhub `/quote` shape:
+`{ "c": 182.63, "d": 1.25, "dp": 0.69, "h": 183.10, "l": 181.20, "o": 181.50, "pc": 181.38, "t": 1700000000 }`
+
+Recommended file layout (keeps each file matching the API response object shape):
+- `src/mocks/coingecko.market_chart.bitcoin.7d.json`
+- `src/mocks/coingecko.market_chart.bitcoin.30d.json`
+- `src/mocks/finnhub.quote.AAPL.json`
+- `src/mocks/finnhub.quote.TSLA.json`
+
+### Mocks
+
+We will create static mock files in `/src/mocks/` (see Phase 1A) and ensure the returned objects from query functions match the PRD shapes exactly.
+
+---
+
+### Phase 1B — Data Layer (Hooks-first)
+
+PRD requires mock data to be consumed through custom TanStack hooks (so UI stays stable when Phase 2 swaps mocks → real API proxy).
+
+#### [NEW] `useEquityQuote(symbol)` (hook)
+- Query key example: `['market', 'equityQuote', symbol]`
+- Uses mock Finnhub quote JSON.
+- Query options:
+	- `staleTime: 5 * 60 * 1000` and `gcTime: 10 * 60 * 1000` (PRD requirement)
+	- `retryDelay`: when the error is `429`, delay retries by 60 seconds
+	- `retry`: allow limited retries for `429` only (avoid looping on other error types)
+
+#### [UPDATE/REUSE] `useMarketChart(coinId, daysKey)` (hook)
+- Ensure timeframe key is PRD-style (e.g., `'7d'`, `'30d'`) so caching is explicit: `['market', coinId, daysKey]`.
+- Loads CoinGecko market chart mock JSON based on timeframe.
+- Uses PRD-aligned cache config: `staleTime` 5 minutes, `gcTime` 10 minutes.
+
+Notes:
+- A thin “services” module is optional in Phase 1. If added, it should only wrap reading mock JSON + applying `simulateDelay()` + throwing shaped errors; hooks remain the public interface.
+
+---
+
+### Phase 1C — UI Components (Loading + Error-first)
+
+All UI pieces must:
+- Render a Bootstrap placeholder/skeleton while `isLoading`.
+- Render a styled fallback card while `isError` (especially for `429`), never a blank chart.
+- Use existing theme primitives and respond to light/dark mode.
+
+#### [NEW] [CryptoChart.jsx](file:///c:/WebDev/WIF2003/src/components/market/CryptoChart.jsx)
+A responsive line chart using `react-chartjs-2`.
+- Includes timeframe toggles (7d, 30d), implemented with the existing `SegmentedControl` for consistent UX.
+- Fetches data via the market chart hook (not `useQuery` directly inside the component).
+- Theme handling: subscribe to theme state (Zustand theme store) so toggling theme reliably re-renders the chart styles. Avoid introducing new hard-coded colors; derive chart colors from Bootstrap theme variables.
+- Loading uses Bootstrap `.placeholder` utilities (the existing SkeletonCard pattern is acceptable).
+- Error state renders a fallback card (e.g., “Market data unavailable”).
+
+#### [NEW] [EquityQuoteCard.jsx](file:///c:/WebDev/WIF2003/src/components/market/EquityQuoteCard.jsx)
+A card component displaying current price, high, low, and % change.
+- Fetches data via `useEquityQuote(symbol)`.
+- Loading uses placeholder skeleton UI.
+- Error fallback:
+	- If `status === 429`, render a rate-limit styled fallback message and rely on the hook’s 60s retry delay.
+	- For other errors, render a generic “temporarily unavailable” fallback.
+
+---
+
+### Phase 1D — Page Assembly & Routing
+
+#### [NEW] [MarketInsightsPage.jsx](file:///c:/WebDev/WIF2003/src/pages/MarketInsightsPage.jsx)
+The main dashboard page assembling `CryptoChart` and multiple `EquityQuoteCard`s. Contains the page layout, titles, and grid system.
+
+#### [MODIFY] [App.jsx](file:///c:/WebDev/WIF2003/src/App.jsx)
+Add the route `/market` for `MarketInsightsPage`. (Note: `Sidebar.jsx` already includes the link to `/market`).
+
+---
+
+## Verification Plan
+
+### Automated Tests
+- Ensure the project compiles successfully using Vite (`npm run dev`).
+- Verify that eslint rules pass for the newly added components.
+
+### Manual Verification
+- Navigate to the "Market Insights" tab on the sidebar.
+- Observe the initial loading state (Bootstrap placeholder UIs).
+- Verify the `CryptoChart` renders data points successfully and responds to timeframe toggles (7d, 30d), simulating new query fetching with the correct query keys (e.g., `['market', 'bitcoin', '7d']`).
+- Verify the `EquityQuoteCard`s display the mock Finnhub quote data correctly.
+- Force a 429 error via the deterministic trigger and confirm the UI renders the rate-limit fallback (no crash/blank state) and does not retry immediately.
+- Toggle between Light mode and Dark mode to ensure `Chart.js` colors and component styling adapt smoothly to the "Executive Clarity" and "Midnight Premium" themes.
