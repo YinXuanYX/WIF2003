@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import "./InvestmentStrategy.css";
+import useInvestmentProfile from "../hooks/useInvestmentProfile";
 
 const QUESTIONS = [
   {
@@ -76,12 +77,6 @@ const QUESTIONS = [
   },
 ];
 
-const ALLOCATIONS = {
-  Conservative: { bonds: 60, equities: 20, cash: 20 },
-  Moderate: { bonds: 40, equities: 50, cash: 10 },
-  Aggressive: { bonds: 10, equities: 80, cash: 10 },
-};
-
 const PROFILE_DETAILS = {
   Conservative: {
     title: "Capital preservation",
@@ -100,15 +95,14 @@ const PROFILE_DETAILS = {
   },
 };
 
-const getProfile = (score) => {
-  if (score <= 10) return "Conservative";
-  if (score <= 20) return "Moderate";
-  return "Aggressive";
-};
-
 export default function InvestmentStrategy() {
   const [answers, setAnswers] = useState({});
-  const [riskProfile, setRiskProfile] = useState(null);
+  const {
+    data: riskProfile,
+    isLoading,
+    submitAssessment,
+    resetProfile,
+  } = useInvestmentProfile();
 
   const answeredCount = useMemo(
     () => Object.keys(answers).length,
@@ -130,20 +124,16 @@ export default function InvestmentStrategy() {
     event.preventDefault();
     if (!isComplete) return;
 
-    const profile = getProfile(totalScore);
-    setRiskProfile({
-      profile,
-      score: totalScore,
-      allocation: ALLOCATIONS[profile],
-    });
+    submitAssessment(answers);
   };
 
   const handleReset = () => {
     setAnswers({});
-    setRiskProfile(null);
+    resetProfile();
   };
 
-  const profileDetails = riskProfile
+  const hasProfile = Boolean(riskProfile?.profile);
+  const profileDetails = hasProfile
     ? PROFILE_DETAILS[riskProfile.profile]
     : null;
 
@@ -233,9 +223,9 @@ export default function InvestmentStrategy() {
                 <button
                   type="submit"
                   className="btn btn-primary"
-                  disabled={!isComplete}
+                  disabled={!isComplete || isLoading}
                 >
-                  Generate Risk Profile
+                  {isLoading ? "Generating..." : "Generate Risk Profile"}
                 </button>
                 <button
                   type="button"
@@ -254,7 +244,7 @@ export default function InvestmentStrategy() {
           </div>
 
           <div className="col-12 col-lg-5">
-            {!riskProfile ? (
+            {!hasProfile ? (
               <div className="strategy-card strategy-empty">
                 <h2>Finish the assessment</h2>
                 <p className="strategy-empty-text">
