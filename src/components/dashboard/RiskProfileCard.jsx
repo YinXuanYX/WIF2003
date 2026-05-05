@@ -2,9 +2,9 @@ import { useRiskProfile } from '../../hooks/useRiskProfile'
 import SkeletonCard from './SkeletonCard'
 
 const PROFILE_COLORS = {
-  Conservative: { badge: 'bg-info', label: 'Conservative' },
-  Moderate: { badge: 'bg-warning', label: 'Moderate' },
-  Aggressive: { badge: 'bg-danger', label: 'Aggressive' },
+  Conservative: { bg: 'rgba(6, 182, 212, 0.12)', color: '#06b6d4' },
+  Moderate: { bg: 'rgba(245, 158, 11, 0.12)', color: '#f59e0b' },
+  Aggressive: { bg: 'rgba(239, 68, 68, 0.12)', color: '#ef4444' },
 }
 
 const ALLOC_COLORS = {
@@ -22,15 +22,22 @@ function RiskProfileCard({ animationOrder = 2 }) {
 
   return (
     <div
-      className="card card-dashboard h-100 animate-fade-in-up"
+      className="glass-card h-100 animate-fade-in-up"
       style={{ '--animation-order': animationOrder }}
     >
       <div className="card-body">
         <h6 className="stat-label mb-3">Risk Profile</h6>
 
         <div className="d-flex align-items-center gap-3 mb-3">
-          <span className={`badge-profile badge ${config.badge} animate-pulse-glow`}>
-            {config.label}
+          <span
+            className="badge-profile animate-pulse-glow"
+            style={{
+              background: config.bg,
+              color: config.color,
+              border: `1px solid ${config.color}20`,
+            }}
+          >
+            {data.profile}
           </span>
           <span className="text-muted small">Score: {data.score}/30</span>
         </div>
@@ -59,7 +66,7 @@ function RiskProfileCard({ animationOrder = 2 }) {
                   backgroundColor: ALLOC_COLORS[key],
                 }}
               />
-              <span className="text-muted small text-capitalize">
+              <span className="text-muted text-capitalize" style={{ fontSize: '0.75rem' }}>
                 {key} {value}%
               </span>
             </div>

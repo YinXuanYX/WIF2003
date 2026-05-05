@@ -17,15 +17,14 @@ function getMonthsRemaining(targetDate) {
  * Pure calculation hook — derives planning metrics from goals + cashflow.
  *
  * @param {Array} goals - Array of goal objects from useGoalsStore
- * @param {Object} cashflow - Cashflow data from useCashFlow() { netIncome, disposableIncome }
+ * @param {number} disposableIncome - Disposable income from useCashFlow()
+ * @param {boolean} isEmptyState - Whether the user has no income set
  * @returns {Object} Derived metrics for the Goals page
  */
-export function useGoalCalculations(goals = [], cashflow = {}) {
+export function useGoalCalculations(goals = [], disposableIncome = 0, isEmptyState = false) {
   return useMemo(() => {
-    const { netIncome = 0, disposableIncome = 0 } = cashflow
-
     // New-user empty state: no income set at all
-    const isNewUser = disposableIncome === 0 && netIncome === 0
+    const isNewUser = isEmptyState
 
     // Per-goal enriched data
     const enrichedGoals = goals.map((goal) => {
@@ -79,5 +78,5 @@ export function useGoalCalculations(goals = [], cashflow = {}) {
       hasGoalLimitWarning,
       goalCount: goals.length,
     }
-  }, [goals, cashflow])
+  }, [goals, disposableIncome, isEmptyState])
 }
