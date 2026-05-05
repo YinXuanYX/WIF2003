@@ -514,3 +514,128 @@ body {
     transform: rotate(180deg);
   }
 }
+
+// ── Cash Flow Page ──
+.cashflow-page {
+  animation: fadeInUp 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.cashflow-empty-state {
+  .empty-state-icon {
+    font-size: 3.5rem;
+    line-height: 1;
+    animation: pulseGlow 2.5s ease-in-out infinite;
+    display: inline-block;
+  }
+}
+
+// ── Expense Rows ──
+.expense-row {
+  padding: 0.625rem 0.75rem;
+  border-radius: 0.625rem;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: var(--nav-hover-bg);
+    transform: translateX(2px);
+  }
+
+  &__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--bs-primary);
+    display: inline-block;
+    flex-shrink: 0;
+  }
+
+  &__delete {
+    opacity: 0;
+    transition: opacity 0.2s;
+    padding: 0.125rem 0.375rem;
+    font-size: 0.8rem;
+    line-height: 1;
+  }
+
+  &:hover &__delete {
+    opacity: 1;
+  }
+}
+
+// ── Summary Stat Cards ──
+.summary-stat-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &--income {
+    background: rgba(16, 185, 129, 0.06);
+  }
+
+  &--expense {
+    background: rgba(239, 68, 68, 0.06);
+  }
+
+  &--disposable {
+    background: rgba(37, 99, 235, 0.06);
+  }
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  }
+}
+
+// ── Income Edit Form Transition ──
+.income-edit-form {
+  animation: fadeInUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.income-display {
+  animation: fadeInUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+// ── Add Expense Form ──
+.expense-add-form {
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+// ── Dark Mode Overrides ──
+[data-bs-theme="dark"] {
+  .expense-row {
+    border-bottom-color: rgba(255, 255, 255, 0.04);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+  }
+
+  .summary-stat-card {
+    &--income {
+      background: rgba(52, 211, 153, 0.08);
+    }
+
+    &--expense {
+      background: rgba(248, 113, 113, 0.08);
+    }
+
+    &--disposable {
+      background: rgba(59, 130, 246, 0.08);
+    }
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+  }
+
+  .expense-add-form {
+    background: rgba(255, 255, 255, 0.02);
+    border-color: rgba(255, 255, 255, 0.06);
+  }
+}
