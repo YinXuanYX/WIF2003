@@ -112,6 +112,7 @@ export default function InvestmentStrategy() {
   const [showWizard, setShowWizard] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [celebrate, setCelebrate] = useState(false);
+  const [showCongrats, setShowCongrats] = useState(false);
   const {
     data: riskProfile,
     isLoading,
@@ -146,10 +147,12 @@ export default function InvestmentStrategy() {
   const handleStart = () => {
     setShowWizard(true);
     setCurrentStep(0);
+    setShowCongrats(false);
   };
 
   const handleExit = () => {
     setShowWizard(false);
+    setShowCongrats(false);
   };
 
   const handlePrev = () => {
@@ -164,11 +167,15 @@ export default function InvestmentStrategy() {
       setCurrentStep((prev) => prev + 1);
       return;
     }
-
     if (!isComplete) return;
     submitAssessment(answers);
-    setShowWizard(false);
+    setShowCongrats(true);
     setCelebrate(true);
+  };
+
+  const handleViewResults = () => {
+    setShowCongrats(false);
+    setShowWizard(false);
   };
 
   const handleReset = () => {
@@ -208,48 +215,32 @@ export default function InvestmentStrategy() {
           <span className="confetti confetti-6" />
         </div>
       )}
-      <div className="dashboard-greeting mb-4 animate-fade-in-up">
-        <h1>Investment Strategy</h1>
-        <p>Assess your risk tolerance to generate a suggested allocation mix.</p>
-      </div>
-
-      <div className="row g-4">
-        <div className="col-12 col-xl-7">
-          <div
-            className="glass-card h-100 animate-fade-in-up"
-            style={{ "--animation-order": 0 }}
-          >
+      {showWizard && (
+        <div className="strategy-overlay" role="dialog" aria-modal="true">
+          <div className="glass-card strategy-overlay-panel animate-scale-in">
             <div className="card-body">
-              <div className="d-flex justify-content-between align-items-start mb-3">
-                <div>
-                  <h6 className="stat-label mb-2">Risk Profile</h6>
-                  <h5 className="mb-1">
-                    {showWizard
-                      ? "Survey in progress"
-                      : hasProfile
-                      ? "Summary"
-                      : "No profile yet"}
-                  </h5>
-                  <p className="text-muted small mb-0">
-                    {showWizard
-                      ? "Answer one question at a time."
-                      : hasProfile
-                      ? "Your latest assessment result."
-                      : "Start the survey to generate your summary."}
-                  </p>
+              {showCongrats ? (
+                <div className="text-center py-5 animate-scale-in">
+                  <div className="mb-4" style={{ fontSize: "4rem" }}>🎉</div>
+                  <h4 className="mb-3">Congratulations on completing this task!</h4>
+                  <p className="text-muted mb-4">You have successfully completed the investment risk preference assessment.。</p>
+                  <button className="btn btn-primary btn-lg px-4 rounded-pill" onClick={handleViewResults}>
+                    check result
+                  </button>
                 </div>
-                <span className="text-muted small">Score: {displayScore}/30</span>
-              </div>
-
-              {showWizard ? (
+              ) : (
                 <>
-                  <div className="strategy-question mb-3">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <span className="text-muted small">
+                  <div className="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                      <h5 className="mb-1">Risk Profile Questionnaire</h5>
+                      <p className="text-muted small mb-0">
                         Question {currentStep + 1} of {QUESTIONS.length}
-                      </span>
-                      <span className="badge bg-light text-dark">0-5 pts</span>
+                      </p>
                     </div>
+                    <span className="badge bg-light text-dark">0-5 pts</span>
+                  </div>
+
+                  <div className="strategy-question mb-3">
                     <h5 className="mb-3">{currentQuestion.title}</h5>
                     <div className="strategy-options">
                       {currentQuestion.options.map((option) => {
@@ -326,7 +317,45 @@ export default function InvestmentStrategy() {
                     </div>
                   </div>
                 </>
-              ) : !hasProfile ? (
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      <div className="dashboard-greeting mb-4 animate-fade-in-up">
+        <h1>Investment Strategy</h1>
+        <p>Assess your risk tolerance to generate a suggested allocation mix.</p>
+      </div>
+
+      <div className="row g-4">
+        <div className="col-12 col-xl-7">
+          <div
+            className="glass-card h-100 animate-fade-in-up"
+            style={{ "--animation-order": 0 }}
+          >
+            <div className="card-body">
+              <div className="d-flex justify-content-between align-items-start mb-3">
+                <div>
+                  <h6 className="stat-label mb-2">Risk Profile</h6>
+                  <h5 className="mb-1">
+                    {showWizard
+                      ? "Survey in progress"
+                      : hasProfile
+                      ? "Summary"
+                      : "No profile yet"}
+                  </h5>
+                  <p className="text-muted small mb-0">
+                    {showWizard
+                      ? "Answer one question at a time."
+                      : hasProfile
+                      ? "Your latest assessment result."
+                      : "Start the survey to generate your summary."}
+                  </p>
+                </div>
+                <span className="text-muted small">Score: {displayScore}/30</span>
+              </div>
+
+              {!hasProfile ? (
                 <>
                   <div className="strategy-empty-state mb-4">
                     <div className="strategy-empty-icon">🧭</div>
