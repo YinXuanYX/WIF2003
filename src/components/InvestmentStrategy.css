@@ -75,6 +75,7 @@
   border-radius: 14px;
   background: var(--surface);
   border: 1px solid var(--line);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
 .strategy-score {
@@ -112,6 +113,13 @@
   border: 1px solid var(--line);
   padding: 22px;
   box-shadow: var(--shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.strategy-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 24px 52px rgba(15, 23, 42, 0.16);
+  border-color: #cbd5f5;
 }
 
 .strategy-helper {
@@ -125,6 +133,12 @@
   border-radius: 14px;
   padding: 16px;
   border: 1px solid var(--line);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.strategy-question:hover {
+  transform: translateY(-1px);
+  border-color: #cbd5f5;
 }
 
 .strategy-question .form-check {
@@ -195,6 +209,12 @@
   border-radius: 12px;
   background: rgba(248, 250, 252, 0.1);
   border: 1px solid rgba(248, 250, 252, 0.12);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.strategy-list div:hover {
+  transform: translateY(-1px);
+  border-color: rgba(248, 250, 252, 0.3);
 }
 
 .strategy-band {
@@ -209,6 +229,12 @@
   padding: 10px 12px;
   border-radius: 12px;
   background: rgba(248, 250, 252, 0.08);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.strategy-band div:hover {
+  transform: translateY(-1px);
+  border-color: rgba(248, 250, 252, 0.3);
 }
 
 .strategy-band strong {
