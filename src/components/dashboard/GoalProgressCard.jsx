@@ -16,7 +16,7 @@ function GoalProgressCard({ animationOrder = 1 }) {
 
   return (
     <div
-      className="card card-dashboard h-100 animate-fade-in-up"
+      className="glass-card h-100 animate-fade-in-up"
       style={{ '--animation-order': animationOrder }}
     >
       <div className="card-body">
@@ -30,22 +30,26 @@ function GoalProgressCard({ animationOrder = 1 }) {
             <div key={goal._id} className="mb-3">
               <div className="d-flex justify-content-between align-items-baseline mb-1">
                 <span className="fw-semibold small">{goal.title}</span>
-                <span className="text-muted small">
-                  RM {goal.savedAmount.toLocaleString()} / RM{' '}
-                  {goal.targetAmount.toLocaleString()}
+                <span className="text-muted" style={{ fontSize: '0.75rem' }}>
+                  {percent}%
                 </span>
               </div>
-              <div className="progress">
+              <div className="progress" style={{ height: 8 }}>
                 <div
                   className={`progress-bar ${colorClass}`}
                   role="progressbar"
-                  style={{ width: `${percent}%` }}
+                  style={{
+                    width: `${percent}%`,
+                    borderRadius: '1rem',
+                    transition: 'width 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
+                  }}
                   aria-valuenow={percent}
                   aria-valuemin={0}
                   aria-valuemax={100}
-                >
-                  {percent}%
-                </div>
+                />
+              </div>
+              <div className="text-muted mt-1" style={{ fontSize: '0.7rem' }}>
+                RM {goal.savedAmount.toLocaleString()} of RM {goal.targetAmount.toLocaleString()}
               </div>
             </div>
           )
