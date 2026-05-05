@@ -7,22 +7,22 @@ const NAV_GROUPS = [
   {
     label: 'Overview',
     items: [
-      { path: '/dashboard', icon: '📊', label: 'Dashboard' },
+      { path: '/dashboard', icon: 'bi-grid-1x2-fill', label: 'Dashboard' },
     ],
   },
   {
     label: 'Planning',
     items: [
-      { path: '/cashflow', icon: '💰', label: 'Cash Flow' },
-      { path: '/goals', icon: '🎯', label: 'Financial Goals' },
-      { path: '/strategy', icon: '📈', label: 'Investment Strategy' },
+      { path: '/cashflow', icon: 'bi-wallet2', label: 'Cash Flow' },
+      { path: '/goals', icon: 'bi-bullseye', label: 'Financial Goals' },
+      { path: '/strategy', icon: 'bi-graph-up-arrow', label: 'Investment Strategy' },
     ],
   },
   {
     label: 'Analysis',
     items: [
-      { path: '/market', icon: '🌐', label: 'Market Insights' },
-      { path: '/calculator', icon: '🧮', label: 'ROI Calculator' },
+      { path: '/market', icon: 'bi-globe-americas', label: 'Market Insights' },
+      { path: '/calculator', icon: 'bi-calculator', label: 'ROI Calculator' },
     ],
   },
 ]
@@ -51,7 +51,9 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
         <div className="sidebar-brand-row">
           {!collapsed && (
             <Link to="/dashboard" className="sidebar-brand" onClick={onClose}>
-              <div className="sidebar-brand__icon">₿</div>
+              <div className="sidebar-brand__icon">
+                <i className="bi bi-currency-exchange" />
+              </div>
               <span>FinPlan</span>
             </Link>
           )}
@@ -60,7 +62,7 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
             onClick={onToggleCollapse}
             aria-label="Toggle sidebar width"
           >
-            {collapsed ? '›' : '‹'}
+            <i className={`bi ${collapsed ? 'bi-chevron-right' : 'bi-chevron-left'}`} />
           </button>
         </div>
 
@@ -76,7 +78,9 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
                   onClick={onClose}
                   title={collapsed ? item.label : undefined}
                 >
-                  <span className="sidebar-link__icon">{item.icon}</span>
+                  <span className="sidebar-link__icon">
+                    <i className={`bi ${item.icon}`} />
+                  </span>
                   {!collapsed && <span className="sidebar-link__label">{item.label}</span>}
                 </Link>
               ))}
@@ -91,7 +95,9 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
             onClick={onClose}
             title={collapsed ? (user?.name || 'Profile') : undefined}
           >
-            <span className="sidebar-link__icon">👤</span>
+            <span className="sidebar-link__icon">
+              <i className="bi bi-person-circle" />
+            </span>
             {!collapsed && <span className="sidebar-link__label">{user?.name || 'Profile'}</span>}
           </Link>
           <button
@@ -108,7 +114,7 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
             title={collapsed ? (theme === 'light' ? 'Dark Mode' : 'Light Mode') : undefined}
           >
             <span className="sidebar-link__icon">
-              {theme === 'light' ? '🌙' : '☀️'}
+              <i className={`bi ${theme === 'light' ? 'bi-moon-stars-fill' : 'bi-sun-fill'}`} />
             </span>
             {!collapsed && (
               <span className="sidebar-link__label">

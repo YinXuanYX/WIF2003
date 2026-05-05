@@ -12,21 +12,21 @@ $font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
 $font-family-base: $font-family-sans-serif;
 
 // ── Light Mode ("Executive Clarity") ──
-$body-bg: #f0f2f5;                       // Updated from main
-$body-color: #0f172a;                    // Deep Slate
-$card-bg: rgba(255, 255, 255, 0.65);    // Glass effect from main
+$body-bg: #f8fafc;
+$body-color: #0f172a;
+$card-bg: rgba(255, 255, 255, 0.72);  // Glass effect
 
-$primary: #2563eb;     // Royal Blue
-$success: #10b981;     // Vibrant Emerald Green
-$danger: #ef4444;      // Crisp Red
+$primary: #2563eb;
+$success: #10b981;
+$danger: #ef4444;
 $warning: #f59e0b;
 $info: #06b6d4;
 
-$text-muted: #64748b;  // Cool Gray
+$text-muted: #64748b;
 
 // ── Card & Border ──
 $card-border-radius: 1.25rem;
-$card-border-color: rgba(255, 255, 255, 0.18);
+$card-border-color: rgba(255, 255, 255, 0.25);
 $card-spacer-y: 1.25rem;
 $card-spacer-x: 1.5rem;
 $card-cap-padding-y: 1rem;
@@ -37,9 +37,9 @@ $border-radius-lg: 1rem;
 $border-radius-sm: 0.5rem;
 
 // ── Shadows ──
-$box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-$box-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-$box-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+$box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+$box-shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.03);
+$box-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
 
 // ── Progress ──
 $progress-height: 8px;
