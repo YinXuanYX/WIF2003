@@ -6,6 +6,7 @@ import DashboardPage from "./pages/DashboardPage";
 import ROICalculator from "./components/ROIcalculator";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/calculator" element={<ROICalculator />} />
+              <Route path="/profile" element={<ProfilePage />} />
               {/* Other team members' routes will be added here */}
             </Route>
           </Route>
