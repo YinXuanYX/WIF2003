@@ -1,12 +1,24 @@
+import { useState } from 'react'
 import { useCashFlow } from '../hooks/useCashFlow'
 import { useGoalCalculations } from '../hooks/useGoalCalculations'
 import useGoalsStore from '../stores/useGoalsStore'
 import GoalCard from '../components/goals/GoalCard'
 import GoalSkeleton from '../components/goals/GoalSkeleton'
+import GoalFormModal from '../components/goals/GoalFormModal'
+import DeleteConfirmModal from '../components/goals/DeleteConfirmModal'
 
 function GoalsPage() {
   const { data: cashflow, isLoading: cashflowLoading } = useCashFlow()
   const goals = useGoalsStore((s) => s.goals)
+  const addGoal = useGoalsStore((s) => s.addGoal)
+  const updateGoal = useGoalsStore((s) => s.updateGoal)
+  const deleteGoal = useGoalsStore((s) => s.deleteGoal)
+
+  // Modal state
+  const [showFormModal, setShowFormModal] = useState(false)
+  const [editingGoal, setEditingGoal] = useState(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [deletingGoal, setDeletingGoal] = useState(null)
 
   const {
     enrichedGoals,
@@ -17,6 +29,34 @@ function GoalsPage() {
     disposableIncome,
     goalCount,
   } = useGoalCalculations(goals, cashflow)
+
+  // CRUD handlers
+  const handleAddClick = () => {
+    setEditingGoal(null)
+    setShowFormModal(true)
+  }
+
+  const handleEditClick = (goal) => {
+    setEditingGoal(goal)
+    setShowFormModal(true)
+  }
+
+  const handleDeleteClick = (goal) => {
+    setDeletingGoal(goal)
+    setShowDeleteModal(true)
+  }
+
+  const handleFormSubmit = (data) => {
+    if (editingGoal) {
+      updateGoal(editingGoal._id, data)
+    } else {
+      addGoal(data)
+    }
+  }
+
+  const handleDeleteConfirm = (id) => {
+    deleteGoal(id)
+  }
 
   // Show skeleton while cashflow is loading
   if (cashflowLoading) {
@@ -48,6 +88,7 @@ function GoalsPage() {
         <button
           className="btn btn-primary btn-add-goal"
           id="btn-add-goal"
+          onClick={handleAddClick}
         >
           + Add Goal
         </button>
@@ -71,6 +112,8 @@ function GoalsPage() {
               <GoalCard
                 goal={goal}
                 animationOrder={i}
+                onEdit={handleEditClick}
+                onDelete={handleDeleteClick}
               />
             </div>
           ))}
@@ -127,6 +170,21 @@ function GoalsPage() {
           </div>
         </div>
       )}
+
+      {/* Modals */}
+      <GoalFormModal
+        show={showFormModal}
+        onClose={() => setShowFormModal(false)}
+        onSubmit={handleFormSubmit}
+        editGoal={editingGoal}
+      />
+
+      <DeleteConfirmModal
+        show={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteConfirm}
+        goal={deletingGoal}
+      />
     </div>
   )
 }
