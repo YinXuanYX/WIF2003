@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
+import TopBar from './TopBar'
 
 function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -22,13 +23,7 @@ function AppShell() {
             : undefined,
         }}
       >
-        <button
-          className="btn-sidebar-toggle"
-          onClick={() => setSidebarOpen((v) => !v)}
-          aria-label="Toggle sidebar"
-        >
-          ☰
-        </button>
+        <TopBar onToggleSidebar={() => setSidebarOpen((v) => !v)} />
         <main className="app-main">
           <Outlet />
         </main>
