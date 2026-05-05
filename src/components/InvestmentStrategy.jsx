@@ -82,6 +82,24 @@ const ALLOCATIONS = {
   Aggressive: { bonds: 10, equities: 80, cash: 10 },
 };
 
+const PROFILE_DETAILS = {
+  Conservative: {
+    title: "Capital preservation",
+    summary:
+      "You favor stability and lower volatility. This mix emphasizes bonds and cash to smooth returns.",
+  },
+  Moderate: {
+    title: "Balanced growth",
+    summary:
+      "You accept moderate risk for long-term growth. The mix balances equities with stabilizing assets.",
+  },
+  Aggressive: {
+    title: "Growth focused",
+    summary:
+      "You can tolerate higher volatility for higher upside. The mix leans toward equities for growth.",
+  },
+};
+
 const getProfile = (score) => {
   if (score <= 10) return "Conservative";
   if (score <= 20) return "Moderate";
@@ -125,17 +143,25 @@ export default function InvestmentStrategy() {
     setRiskProfile(null);
   };
 
+  const profileDetails = riskProfile
+    ? PROFILE_DETAILS[riskProfile.profile]
+    : null;
+
   return (
     <div className="strategy-page">
       <div className="container py-5">
         <div className="strategy-hero shadow-sm">
           <div>
-            <span className="strategy-badge">Module 4</span>
             <h1 className="strategy-title">Investment Strategy</h1>
             <p className="strategy-subtitle">
-              Complete the 6-question assessment to unlock a tailored asset
-              allocation. This is a front-end prototype only.
+              Complete the 6-question assessment to reveal a recommended
+              allocation mix. This is a front-end prototype only.
             </p>
+            <div className="strategy-meta">
+              <span>6 questions</span>
+              <span>2 minutes</span>
+              <span>Score range 0-30</span>
+            </div>
           </div>
           <div className="strategy-scorecard">
             <div className="strategy-score">
@@ -163,6 +189,10 @@ export default function InvestmentStrategy() {
                   Score: {totalScore}/30
                 </span>
               </div>
+              <p className="strategy-helper">
+                Select one response per question. Your score maps to a profile
+                and allocation blueprint.
+              </p>
 
               {QUESTIONS.map((question, index) => (
                 <div key={question.id} className="strategy-question mb-3">
@@ -216,7 +246,7 @@ export default function InvestmentStrategy() {
                 </button>
                 {!isComplete && (
                   <span className="text-muted small d-flex align-items-center">
-                    Answer all questions to continue.
+                    Complete all questions to unlock your profile.
                   </span>
                 )}
               </div>
@@ -226,11 +256,16 @@ export default function InvestmentStrategy() {
           <div className="col-12 col-lg-5">
             {!riskProfile ? (
               <div className="strategy-card strategy-empty">
-                <h2>Complete the assessment</h2>
-                <p className="text-muted">
-                  Once you finish, we will show your profile, score, and an
-                  allocation breakdown.
+                <h2>Finish the assessment</h2>
+                <p className="strategy-empty-text">
+                  Answer all six questions to see your profile, score, and the
+                  asset split.
                 </p>
+                <div className="strategy-list">
+                  <div>Profile label and score band</div>
+                  <div>Asset split for bonds, equities, cash</div>
+                  <div>Client-side preview for backend payload</div>
+                </div>
                 <div className="strategy-band mt-3">
                   <div>
                     <span>0 - 10</span>
@@ -250,11 +285,17 @@ export default function InvestmentStrategy() {
               <div className="strategy-card">
                 <div className="d-flex justify-content-between align-items-center">
                   <h2 className="mb-0">Your Risk Profile</h2>
-                  <span className="badge bg-success">{riskProfile.profile}</span>
+                  <span className="strategy-profile-tag">
+                    {riskProfile.profile}
+                  </span>
                 </div>
                 <p className="text-muted mt-2">
                   Total score: <strong>{riskProfile.score}</strong> out of 30
                 </p>
+                <div className="strategy-profile-copy">
+                  <strong>{profileDetails.title}</strong>
+                  <span>{profileDetails.summary}</span>
+                </div>
 
                 <div className="strategy-allocation">
                   <div>
