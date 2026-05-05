@@ -38,27 +38,27 @@ function IncomeCard({ netIncome, onSave, isSaving, animationOrder = 0 }) {
     >
       <div className="card-body d-flex flex-column">
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h6 className="stat-label mb-0">Monthly Net Income</h6>
+          <h6 className="stat-label mb-0">
+            <i className="bi bi-cash-stack me-1" />
+            Monthly Net Income
+          </h6>
           {!editing && (
             <button
               id="income-edit-btn"
               className="btn btn-sm btn-outline-secondary rounded-pill px-3"
               onClick={handleEdit}
             >
-              ✏️ Edit
+              <i className="bi bi-pencil-square me-1" />
+              Edit
             </button>
           )}
         </div>
 
         {!editing ? (
-          /* ── Display Mode ── */
           <div className="income-display mt-auto">
             <div
               className="d-flex align-items-center justify-content-center rounded-3 p-3"
-              style={{
-                background: 'rgba(16, 185, 129, 0.08)',
-                minHeight: 100,
-              }}
+              style={{ background: 'rgba(16, 185, 129, 0.08)', minHeight: 100 }}
             >
               <div className="text-center">
                 <div className="text-muted small mb-1">Current Income</div>
@@ -67,12 +67,9 @@ function IncomeCard({ netIncome, onSave, isSaving, animationOrder = 0 }) {
                 </div>
               </div>
             </div>
-            <div className="text-muted small mt-2 text-center">
-              After tax, per month
-            </div>
+            <div className="text-muted small mt-2 text-center">After tax, per month</div>
           </div>
         ) : (
-          /* ── Edit Mode ── */
           <form onSubmit={handleSubmit(onSubmit)} className="income-edit-form mt-2">
             <label htmlFor="income-input" className="form-label small fw-semibold">
               Net Income (RM)
@@ -100,9 +97,7 @@ function IncomeCard({ netIncome, onSave, isSaving, animationOrder = 0 }) {
                 className="btn btn-primary rounded-pill px-4"
                 disabled={isSaving}
               >
-                {isSaving ? (
-                  <span className="spinner-border spinner-border-sm me-1" />
-                ) : null}
+                {isSaving && <span className="spinner-border spinner-border-sm me-1" />}
                 Save
               </button>
               <button
