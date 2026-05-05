@@ -11,7 +11,7 @@ import GoalWarningBanner from '../components/goals/GoalWarningBanner'
 import GoalLimitWarning from '../components/goals/GoalLimitWarning'
 
 function GoalsPage() {
-  const { data: cashflow, isLoading: cashflowLoading } = useCashFlow()
+  const { data: cashflow, isLoading: cashflowLoading, disposableIncome, isEmptyState } = useCashFlow()
   const goals = useGoalsStore((s) => s.goals)
   const addGoal = useGoalsStore((s) => s.addGoal)
   const updateGoal = useGoalsStore((s) => s.updateGoal)
@@ -34,11 +34,10 @@ function GoalsPage() {
     totalSavedAmount,
     overallProgress,
     totalRequiredMonthly,
-    disposableIncome,
     isOverextended,
     hasGoalLimitWarning,
     goalCount,
-  } = useGoalCalculations(goals, cashflow)
+  } = useGoalCalculations(goals, disposableIncome, isEmptyState)
 
   // Re-show dismissed warnings when the underlying data changes
   useEffect(() => {
