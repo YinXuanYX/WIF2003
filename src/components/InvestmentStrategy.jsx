@@ -369,7 +369,7 @@ export default function InvestmentStrategy() {
                 <div className="py-2">
                   <div className="strategy-empty-state mb-4 border-0 p-4" style={{ background: 'linear-gradient(145deg, rgba(var(--bs-primary-rgb), 0.05) 0%, rgba(var(--bs-primary-rgb), 0.02) 100%)', borderRadius: '1.25rem' }}>
                     <div className="d-flex align-items-center gap-3 mb-3">
-                      <div className="d-flex align-items-center justify-content-center rounded-circle shadow-sm bg-white" style={{ width: 48, height: 48, color: 'var(--bs-primary)' }}>
+                      <div className="d-flex align-items-center justify-content-center rounded-circle shadow-sm bg-body" style={{ width: 48, height: 48, color: 'var(--bs-primary)' }}>
                         <i className="bi bi-compass fs-4"></i>
                       </div>
                       <div>
@@ -437,9 +437,9 @@ export default function InvestmentStrategy() {
 
                   <div className="d-flex justify-content-between flex-wrap gap-2 mb-4">
                     {Object.entries(riskProfile.allocation).map(([key, value]) => (
-                      <div key={key} className="text-center bg-white border rounded-pill px-3 py-2 shadow-sm flex-grow-1">
+                      <div key={key} className="text-center bg-body border rounded-pill px-3 py-2 shadow-sm flex-grow-1">
                         <div className="d-inline-block rounded-circle me-2 align-middle" style={{ width: 10, height: 10, backgroundColor: ALLOC_COLORS[key] }} />
-                        <span className="text-dark fw-medium text-capitalize" style={{ fontSize: '0.85rem' }}>{key}</span>
+                        <span className="text-body fw-medium text-capitalize" style={{ fontSize: '0.85rem' }}>{key}</span>
                         <span className="ms-2 text-muted fw-bold" style={{ fontSize: '0.85rem' }}>{value}%</span>
                       </div>
                     ))}
@@ -449,7 +449,7 @@ export default function InvestmentStrategy() {
                     <div className="d-flex gap-3 align-items-start">
                       <i className="bi bi-info-circle-fill text-primary fs-4 mt-1"></i>
                       <div>
-                        <strong className="d-block fs-6 mb-1 text-dark">{profileDetails.title}</strong>
+                        <strong className="d-block fs-6 mb-1 text-body">{profileDetails.title}</strong>
                         <span className="text-muted" style={{ lineHeight: '1.6' }}>{profileDetails.summary}</span>
                       </div>
                     </div>
@@ -483,24 +483,24 @@ export default function InvestmentStrategy() {
               </div>
               
               <div className="strategy-band-list mb-4">
-                <div className="strategy-band-row shadow-sm border-0 bg-white d-flex align-items-center">
+                <div className="strategy-band-row shadow-sm border-0 bg-body d-flex align-items-center">
                   <div className="rounded-circle me-3" style={{ width: 12, height: 12, backgroundColor: PROFILE_COLORS.Conservative.color }}></div>
                   <div className="flex-grow-1">
-                    <strong className="d-block text-dark">Conservative</strong>
+                    <strong className="d-block text-body">Conservative</strong>
                     <span className="small text-muted">0 - 10 points</span>
                   </div>
                 </div>
-                <div className="strategy-band-row shadow-sm border-0 bg-white d-flex align-items-center">
+                <div className="strategy-band-row shadow-sm border-0 bg-body d-flex align-items-center">
                   <div className="rounded-circle me-3" style={{ width: 12, height: 12, backgroundColor: PROFILE_COLORS.Moderate.color }}></div>
                   <div className="flex-grow-1">
-                    <strong className="d-block text-dark">Moderate</strong>
+                    <strong className="d-block text-body">Moderate</strong>
                     <span className="small text-muted">11 - 20 points</span>
                   </div>
                 </div>
-                <div className="strategy-band-row shadow-sm border-0 bg-white d-flex align-items-center">
+                <div className="strategy-band-row shadow-sm border-0 bg-body d-flex align-items-center">
                   <div className="rounded-circle me-3" style={{ width: 12, height: 12, backgroundColor: PROFILE_COLORS.Aggressive.color }}></div>
                   <div className="flex-grow-1">
-                    <strong className="d-block text-dark">Aggressive</strong>
+                    <strong className="d-block text-body">Aggressive</strong>
                     <span className="small text-muted">21 - 30 points</span>
                   </div>
                 </div>
@@ -511,7 +511,7 @@ export default function InvestmentStrategy() {
                   <i className="bi bi-lightbulb-fill me-2"></i> How it works
                 </h6>
                 <ul className="strategy-tips-list mb-0">
-                  <li className="mb-2">Each answer awards between <strong className="text-dark">0-5 points</strong> based on your risk tolerance.</li>
+                  <li className="mb-2">Each answer awards between <strong className="text-body">0-5 points</strong> based on your risk tolerance.</li>
                   <li className="mb-2">Your total score is calculated to map directly to a tailored risk profile.</li>
                   <li>In Phase 2, asset allocation will be fully driven by backend AI analysis.</li>
                 </ul>
