@@ -8,7 +8,6 @@
 
 // 1. Load custom variable overrides (BEFORE Bootstrap)
 @import './variables';
-@import "bootstrap-icons/font/bootstrap-icons.css";
 
 // 2. Import full Bootstrap SCSS source
 @import "bootstrap/scss/bootstrap";
