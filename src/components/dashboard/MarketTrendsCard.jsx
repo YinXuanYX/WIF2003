@@ -29,13 +29,11 @@ function MarketTrendsCard({ animationOrder = 3 }) {
 
   useEffect(() => {
     return () => {
-      if (chartRef.current) {
-        chartRef.current.destroy()
-      }
+      if (chartRef.current) chartRef.current.destroy()
     }
   }, [])
 
-  if (isLoading) return <SkeletonCard lines={6} />
+  if (isLoading) return <SkeletonCard lines={8} />
 
   const prices = data.prices
   const currentPrice = prices[prices.length - 1][1]
@@ -59,13 +57,14 @@ function MarketTrendsCard({ animationOrder = 3 }) {
         data: prices.map(([, p]) => p),
         borderColor: isPositive ? '#10b981' : '#ef4444',
         backgroundColor: isPositive
-          ? 'rgba(16, 185, 129, 0.08)'
-          : 'rgba(239, 68, 68, 0.08)',
+          ? 'rgba(16, 185, 129, 0.06)'
+          : 'rgba(239, 68, 68, 0.06)',
         fill: true,
         tension: 0.4,
         pointRadius: 0,
-        pointHoverRadius: 5,
-        borderWidth: 2,
+        pointHoverRadius: 6,
+        pointHoverBackgroundColor: isPositive ? '#10b981' : '#ef4444',
+        borderWidth: 2.5,
       },
     ],
   }
@@ -76,12 +75,17 @@ function MarketTrendsCard({ animationOrder = 3 }) {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: isDark ? '#1e293b' : '#ffffff',
+        backgroundColor: isDark
+          ? 'rgba(30, 41, 59, 0.95)'
+          : 'rgba(255, 255, 255, 0.95)',
         titleColor: isDark ? '#f8fafc' : '#0f172a',
         bodyColor: isDark ? '#94a3b8' : '#64748b',
-        borderColor: isDark ? '#334155' : '#e2e8f0',
+        borderColor: isDark
+          ? 'rgba(255,255,255,0.08)'
+          : 'rgba(0,0,0,0.06)',
         borderWidth: 1,
         padding: 12,
+        cornerRadius: 12,
         displayColors: false,
         callbacks: {
           label: (ctx) => `$${ctx.parsed.y.toLocaleString()}`,
@@ -91,19 +95,21 @@ function MarketTrendsCard({ animationOrder = 3 }) {
     scales: {
       x: {
         grid: { display: false },
+        border: { display: false },
         ticks: {
-          color: isDark ? '#94a3b8' : '#64748b',
-          maxTicksLimit: 6,
-          font: { size: 11 },
+          color: isDark ? '#94a3b8' : '#94a3b8',
+          maxTicksLimit: 8,
+          font: { size: 11, family: 'Inter' },
         },
       },
       y: {
         grid: {
-          color: isDark ? 'rgba(51,65,85,0.5)' : 'rgba(226,232,240,0.8)',
+          color: isDark ? 'rgba(255,255,255,0.04)' : 'rgba(0,0,0,0.04)',
         },
+        border: { display: false },
         ticks: {
-          color: isDark ? '#94a3b8' : '#64748b',
-          font: { size: 11 },
+          color: isDark ? '#94a3b8' : '#94a3b8',
+          font: { size: 11, family: 'Inter' },
           callback: (v) => `$${(v / 1000).toFixed(0)}k`,
         },
       },
@@ -116,7 +122,7 @@ function MarketTrendsCard({ animationOrder = 3 }) {
 
   return (
     <div
-      className="card card-dashboard h-100 animate-fade-in-up"
+      className="glass-card h-100 animate-fade-in-up"
       style={{ '--animation-order': animationOrder }}
     >
       <div className="card-body">
@@ -126,16 +132,20 @@ function MarketTrendsCard({ animationOrder = 3 }) {
             <span className="fw-semibold">Bitcoin (BTC)</span>
           </div>
           <div className="text-end">
-            <div className="stat-value" style={{ fontSize: '1.25rem' }}>
+            <div className="stat-value-sm">
               ${currentPrice.toLocaleString()}
             </div>
-            <span className={`small fw-semibold ${isPositive ? 'text-success' : 'text-danger'}`}>
-              {isPositive ? '▲' : '▼'} {Math.abs(priceChange).toFixed(2)} ({changePercent}%)
+            <span
+              className={`fw-semibold ${isPositive ? 'text-success' : 'text-danger'}`}
+              style={{ fontSize: '0.8rem' }}
+            >
+              {isPositive ? '▲' : '▼'} {Math.abs(priceChange).toFixed(2)} (
+              {changePercent}%)
             </span>
           </div>
         </div>
 
-        <div className="chart-container" style={{ height: 200 }}>
+        <div className="chart-container" style={{ height: 280 }}>
           <Line ref={chartRef} data={chartData} options={options} />
         </div>
       </div>
