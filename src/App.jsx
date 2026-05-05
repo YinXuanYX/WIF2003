@@ -6,7 +6,6 @@ import DashboardPage from "./pages/DashboardPage";
 import CashFlowPage from "./pages/CashFlowPage";
 import CalculatorPage from "./pages/CalculatorPage";
 import MarketInsightsPage from "./pages/MarketInsightsPage";
-import ROICalculator from "./components/ROIcalculator";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ProfilePage from "./pages/ProfilePage";
@@ -27,7 +26,7 @@ export default function App() {
               <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/cashflow" element={<CashFlowPage />} />
               <Route path="/market" element={<MarketInsightsPage />} />
-              <Route path="/calculator" element={<ROICalculator />} />
+              <Route path="/calculator" element={<CalculatorPage />} />
               <Route path="/profile" element={<ProfilePage />} />
             </Route>
           </Route>
