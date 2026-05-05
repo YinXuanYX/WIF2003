@@ -92,7 +92,7 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
             {!collapsed && <span className="sidebar-link__label">{user?.name || 'Profile'}</span>}
           </Link>
           <button
-            className="sidebar-link w-100 border-0 bg-transparent text-start"
+            className="sidebar-link w-100 border-0"
             onClick={toggleTheme}
             title={collapsed ? (theme === 'light' ? 'Dark Mode' : 'Light Mode') : undefined}
           >

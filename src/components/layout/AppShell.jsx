@@ -9,17 +9,20 @@ function AppShell() {
 
   return (
     <div className="app-shell">
-      <div className="ambient-canvas">
-        <div className="ambient-orb orb-1"></div>
-        <div className="ambient-orb orb-2"></div>
-      </div>
       <Sidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
         collapsed={collapsed}
         onToggleCollapse={() => setCollapsed((v) => !v)}
       />
-      <div className="app-content">
+      <div
+        className="app-content"
+        style={{
+          marginLeft: collapsed
+            ? 'var(--sidebar-collapsed-width)'
+            : undefined,
+        }}
+      >
         <TopBar onToggleSidebar={() => setSidebarOpen((v) => !v)} />
         <main className="app-main">
           <Outlet />

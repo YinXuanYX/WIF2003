@@ -11,7 +11,6 @@ import {
 } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 import { useMarketChart } from '../../hooks/useMarketChart'
-import useThemeStore from '../../stores/useThemeStore'
 import SkeletonCard from './SkeletonCard'
 
 ChartJS.register(
@@ -25,8 +24,7 @@ ChartJS.register(
 )
 
 function MarketTrendsCard({ animationOrder = 3 }) {
-  const { data, isLoading, isError } = useMarketChart('bitcoin', '30d')
-  const theme = useThemeStore((state) => state.theme)
+  const { data, isLoading } = useMarketChart()
   const chartRef = useRef(null)
 
   useEffect(() => {
@@ -36,23 +34,6 @@ function MarketTrendsCard({ animationOrder = 3 }) {
   }, [])
 
   if (isLoading) return <SkeletonCard lines={8} />
-
-  if (isError || !data?.prices?.length) {
-    return (
-      <div
-        className="glass-card h-100 animate-fade-in-up"
-        style={{ '--animation-order': animationOrder }}
-      >
-        <div className="card-body d-flex flex-column justify-content-center text-center py-5">
-          <div className="fs-2 mb-2">📉</div>
-          <h6 className="fw-semibold mb-2">Market data unavailable</h6>
-          <p className="text-muted small mb-0">
-            Please try again later or refresh the page.
-          </p>
-        </div>
-      </div>
-    )
-  }
 
   const prices = data.prices
   const currentPrice = prices[prices.length - 1][1]
@@ -65,7 +46,8 @@ function MarketTrendsCard({ animationOrder = 3 }) {
     new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
   )
 
-  const isDark = theme === 'dark'
+  const isDark =
+    document.documentElement.getAttribute('data-bs-theme') === 'dark'
 
   const chartData = {
     labels,
