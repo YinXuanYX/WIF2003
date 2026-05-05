@@ -1,7 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import ROICalculator from "./components/ROIcalculator";
+
 import Navbar from "./components/Navbar";
 import DashboardPage from "./pages/DashboardPage";
+import InvestmentStrategy from "./components/InvestmentStrategy";
+
 
 function AppLayout() {
   const location = useLocation();
@@ -17,6 +20,7 @@ function AppLayout() {
       <Routes>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/strategy" element={<InvestmentStrategy />} />
         <Route path="/calculator" element={<ROICalculator />} />
       </Routes>
     </>
