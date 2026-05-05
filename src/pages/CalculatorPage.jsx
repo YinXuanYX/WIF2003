@@ -52,12 +52,12 @@ function CalculatorPage() {
             goals={goals}
             disposableIncome={disposableIncome}
             defaultValues={{
-              principal: '',
-              rate: '',
-              years: '',
+              principal: 10000,
+              rate: 5,
+              years: 10,
               compounding: 1
             }}
-            onCalculate={handleCalculate} 
+            onChange={handleCalculate} 
           />
         </div>
 

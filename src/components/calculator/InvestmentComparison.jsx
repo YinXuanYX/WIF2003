@@ -1,4 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import GlassCard from '../ui/GlassCard'
+import SliderInput from '../ui/SliderInput'
 
 const DEFAULT_VEHICLES = [
   { id: 'fd', name: 'Fixed Deposit', defaultRate: 3.5, icon: 'bi-safe2', color: 'primary' },
@@ -10,8 +12,7 @@ function calculateCompoundInterest(principal, ratePercent, years, compoundingFre
   const r = ratePercent / 100
   const n = compoundingFrequency
   const t = years
-  const amount = principal * Math.pow(1 + r / n, n * t)
-  return amount
+  return principal * Math.pow(1 + r / n, n * t)
 }
 
 function InvestmentComparison({ hasCalculated, principal, years, compounding, animationOrder = 2 }) {
@@ -24,89 +25,92 @@ function InvestmentComparison({ hasCalculated, principal, years, compounding, an
   // Calculate values for each vehicle
   const results = DEFAULT_VEHICLES.map(vehicle => {
     const rate = rates[vehicle.id]
-    const futureValue = hasCalculated 
-      ? calculateCompoundInterest(principal, rate, years, compounding)
-      : 0
-    const profit = futureValue - principal
-    const roi = principal > 0 ? (profit / principal) * 100 : 0
+    // Make sure principal and years are valid numbers
+    const validPrincipal = Number(principal) || 0
+    const validYears = Number(years) || 0
+    
+    const futureValue = calculateCompoundInterest(validPrincipal, rate, validYears, compounding)
+    const profit = futureValue - validPrincipal
+    const roi = validPrincipal > 0 ? (profit / validPrincipal) * 100 : 0
 
     return { ...vehicle, rate, futureValue, profit, roi }
   })
 
   // Find the winner
-  const bestVehicleId = hasCalculated && results.length > 0
+  const bestVehicleId = results.length > 0 && Number(principal) > 0
     ? results.reduce((best, current) => current.futureValue > best.futureValue ? current : best).id
     : null
 
-  const handleRateChange = (id, newRateStr) => {
-    const newRate = parseFloat(newRateStr)
-    setRates(prev => ({ ...prev, [id]: isNaN(newRate) ? 0 : newRate }))
+  const handleRateChange = (id, newRate) => {
+    setRates(prev => ({ ...prev, [id]: Number(newRate) }))
   }
 
   return (
-    <div className="glass-card mt-4 animate-fade-in-up" style={{ '--animation-order': animationOrder }}>
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h6 className="stat-label mb-0">
-            <i className="bi bi-layout-three-columns me-1" />
-            Investment Comparison
-          </h6>
-          <span className="badge rounded-pill bg-light text-dark border">
-            Based on {years || 0} years
-          </span>
-        </div>
+    <GlassCard className="mt-4" animationOrder={animationOrder}>
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <h6 className="stat-label mb-0">
+          <i className="bi bi-layout-three-columns me-1" />
+          Investment Comparison
+        </h6>
+        <span className="badge rounded-pill" style={{ background: 'var(--bs-primary)', color: '#fff', fontSize: '0.75rem' }}>
+          Based on {years || 0} years
+        </span>
+      </div>
 
-        {!hasCalculated ? (
-          <div className="text-center text-muted py-4">
-            Calculate your custom ROI first to unlock comparisons.
-          </div>
-        ) : (
-          <div className="row g-4">
-            {results.map(res => (
-              <div key={res.id} className="col-md-4">
-                <div className={`p-3 rounded-4 border position-relative ${bestVehicleId === res.id ? 'border-primary shadow-sm bg-primary bg-opacity-10' : 'bg-body'}`}>
-                  {bestVehicleId === res.id && (
-                    <span className="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-primary">
-                      Highest Return
-                    </span>
-                  )}
-                  
-                  <div className="d-flex align-items-center gap-2 mb-3 mt-2">
-                    <div className={`text-${res.color} bg-${res.color} bg-opacity-10 rounded p-2 d-flex align-items-center justify-content-center`} style={{ width: 36, height: 36 }}>
-                      <i className={`bi ${res.icon}`} />
-                    </div>
-                    <span className="fw-semibold flex-grow-1">{res.name}</span>
-                  </div>
+      <div className="row g-4">
+        {results.map(res => (
+          <div key={res.id} className="col-md-4">
+            <div 
+              className="p-4 rounded-4 position-relative" 
+              style={{ 
+                background: bestVehicleId === res.id ? 'var(--nav-active-bg)' : 'rgba(150, 150, 150, 0.05)',
+                border: bestVehicleId === res.id ? '1px solid var(--bs-primary)' : '1px solid rgba(150, 150, 150, 0.1)',
+                boxShadow: bestVehicleId === res.id ? '0 8px 24px rgba(37,99,235,0.1)' : 'none',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              {bestVehicleId === res.id && (
+                <span className="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-primary shadow-sm px-3 py-2">
+                  Highest Return
+                </span>
+              )}
+              
+              <div className="d-flex align-items-center gap-3 mb-4 mt-2">
+                <div className={`text-${res.color} bg-${res.color} bg-opacity-10 rounded-3 d-flex align-items-center justify-content-center`} style={{ width: 48, height: 48, fontSize: '1.5rem' }}>
+                  <i className={`bi ${res.icon}`} />
+                </div>
+                <span className="fw-bold fs-5">{res.name}</span>
+              </div>
 
-                  <div className="mb-3">
-                    <label className="form-label small text-muted mb-1">Annual Rate (%)</label>
-                    <div className="input-group input-group-sm">
-                      <input
-                        type="number"
-                        step="0.1"
-                        className="form-control text-end"
-                        value={res.rate === 0 ? '' : res.rate}
-                        onChange={(e) => handleRateChange(res.id, e.target.value)}
-                      />
-                      <span className="input-group-text">%</span>
-                    </div>
-                  </div>
+              <div className="mb-4">
+                <SliderInput
+                  label="Expected Annual Rate"
+                  value={res.rate}
+                  onChange={(val) => handleRateChange(res.id, val)}
+                  min={0}
+                  max={20}
+                  step={0.1}
+                  suffix="%"
+                />
+              </div>
 
-                  <div className="d-flex justify-content-between mb-1">
-                    <span className="text-muted small">Future Value</span>
-                    <span className="fw-semibold">RM {res.futureValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                  </div>
-                  <div className="d-flex justify-content-between">
-                    <span className="text-muted small">Total ROI</span>
-                    <span className={`fw-semibold ${res.roi > 0 ? 'text-success' : ''}`}>{res.roi.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%</span>
-                  </div>
+              <div className="pt-3 border-top" style={{ borderColor: 'rgba(150,150,150,0.1)' }}>
+                <div className="d-flex justify-content-between mb-2">
+                  <span className="text-muted small">Future Value</span>
+                  <span className="fw-bold text-primary">RM {res.futureValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                </div>
+                <div className="d-flex justify-content-between">
+                  <span className="text-muted small">Total ROI</span>
+                  <span className={`fw-bold ${res.roi > 0 ? 'text-success' : ''}`}>
+                    {res.roi > 0 ? '+' : ''}{res.roi.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}%
+                  </span>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-        )}
+        ))}
       </div>
-    </div>
+    </GlassCard>
   )
 }
 
