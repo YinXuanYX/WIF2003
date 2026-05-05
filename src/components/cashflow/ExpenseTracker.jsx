@@ -3,13 +3,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { expenseSchema } from '../../schemas/cashflow.schema'
 
-function ExpenseTracker({
-  expenses = [],
-  onAdd,
-  onRemove,
-  isAdding,
-  animationOrder = 0,
-}) {
+function ExpenseTracker({ expenses = [], onAdd, onRemove, isAdding, animationOrder = 0 }) {
   const [confirmDeleteId, setConfirmDeleteId] = useState(null)
 
   const {
@@ -42,9 +36,11 @@ function ExpenseTracker({
       style={{ '--animation-order': animationOrder }}
     >
       <div className="card-body d-flex flex-column">
-        {/* ── Header ── */}
         <div className="d-flex justify-content-between align-items-center mb-3">
-          <h6 className="stat-label mb-0">Recurring Expenses</h6>
+          <h6 className="stat-label mb-0">
+            <i className="bi bi-receipt me-1" />
+            Recurring Expenses
+          </h6>
           <span
             className="badge rounded-pill"
             style={{
@@ -58,12 +54,7 @@ function ExpenseTracker({
           </span>
         </div>
 
-        {/* ── Add Expense Form ── */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="expense-add-form mb-3"
-          id="add-expense-form"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="expense-add-form mb-3" id="add-expense-form">
           <div className="row g-2 align-items-start">
             <div className="col">
               <input
@@ -73,15 +64,11 @@ function ExpenseTracker({
                 placeholder="Expense label"
                 {...register('label')}
               />
-              {errors.label && (
-                <div className="invalid-feedback">{errors.label.message}</div>
-              )}
+              {errors.label && <div className="invalid-feedback">{errors.label.message}</div>}
             </div>
             <div className="col-auto" style={{ width: 140 }}>
               <div className="input-group">
-                <span className="input-group-text" style={{ fontSize: '0.8rem' }}>
-                  RM
-                </span>
+                <span className="input-group-text" style={{ fontSize: '0.8rem' }}>RM</span>
                 <input
                   id="expense-amount-input"
                   type="number"
@@ -91,9 +78,7 @@ function ExpenseTracker({
                   {...register('amount')}
                 />
               </div>
-              {errors.amount && (
-                <div className="text-danger small mt-1">{errors.amount.message}</div>
-              )}
+              {errors.amount && <div className="text-danger small mt-1">{errors.amount.message}</div>}
             </div>
             <div className="col-auto">
               <button
@@ -105,18 +90,17 @@ function ExpenseTracker({
                 {isAdding ? (
                   <span className="spinner-border spinner-border-sm" />
                 ) : (
-                  '+ Add'
+                  <><i className="bi bi-plus-lg me-1" />Add</>
                 )}
               </button>
             </div>
           </div>
         </form>
 
-        {/* ── Expense List ── */}
         <div className="expense-list flex-grow-1" style={{ overflowY: 'auto', maxHeight: 320 }}>
           {expenses.length === 0 ? (
             <div className="text-center text-muted py-4">
-              <div className="mb-2" style={{ fontSize: '1.5rem' }}>📭</div>
+              <i className="bi bi-inbox d-block mb-2" style={{ fontSize: '1.5rem' }} />
               <div className="small">No expenses yet. Add your first one above.</div>
             </div>
           ) : (
@@ -150,7 +134,7 @@ function ExpenseTracker({
                         style={{ fontSize: '0.7rem' }}
                         onClick={() => setConfirmDeleteId(null)}
                       >
-                        ✕
+                        <i className="bi bi-x" />
                       </button>
                     </div>
                   ) : (
@@ -159,7 +143,7 @@ function ExpenseTracker({
                       onClick={() => handleDelete(expense.id)}
                       aria-label={`Delete ${expense.label}`}
                     >
-                      🗑️
+                      <i className="bi bi-trash3" />
                     </button>
                   )}
                 </div>
