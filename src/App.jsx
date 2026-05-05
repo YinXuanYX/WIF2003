@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import ROICalculator from "./components/ROIcalculator";
+import InvestmentStrategy from "./components/InvestmentStrategy";
 import Navbar from "./Navbar";
 
 function AppLayout() {
@@ -15,7 +16,7 @@ function AppLayout() {
       {!hideNavbar && <Navbar />}
 
       <Routes>
-
+        <Route path="/strategy" element={<InvestmentStrategy />} />
         <Route path="/calculator" element={<ROICalculator />} />
       </Routes>
     </>
