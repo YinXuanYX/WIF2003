@@ -16,18 +16,84 @@
     linear-gradient(120deg, rgba(14, 165, 233, 0.08), transparent 60%);
   color: var(--ink);
   font-family: "Space Grotesk", "Segoe UI", sans-serif;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.strategy-page::before,
+.strategy-page::after {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  opacity: 0.45;
+  filter: blur(0.5px);
+  z-index: 0;
+}
+
+.strategy-page::before {
+  top: -220px;
+  right: -140px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(14, 165, 233, 0.35),
+    transparent 60%
+  );
+}
+
+.strategy-page::after {
+  bottom: -260px;
+  left: -180px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(249, 115, 22, 0.25),
+    transparent 62%
+  );
+}
+
+.strategy-page .container {
+  position: relative;
+  z-index: 1;
 }
 
 .strategy-hero {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
   padding: 24px 28px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.88);
   border-radius: 20px;
   border: 1px solid var(--line);
   box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px);
+  animation: rise 0.6s ease both;
+}
+
+.strategy-hero::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  bottom: -160px;
+  width: 340px;
+  height: 340px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(20, 184, 166, 0.28),
+    transparent 65%
+  );
+  opacity: 0.7;
+}
+
+.strategy-hero > * {
+  position: relative;
+  z-index: 1;
 }
 
 .strategy-badge {
@@ -35,16 +101,21 @@
   align-items: center;
   padding: 4px 12px;
   border-radius: 999px;
-  background: var(--accent);
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
   color: #ffffff;
   font-weight: 600;
   letter-spacing: 0.3px;
+  box-shadow: 0 10px 20px rgba(14, 165, 233, 0.25);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  margin-bottom: 8px;
 }
 
 .strategy-title {
   font-family: "Fraunces", "Times New Roman", serif;
   font-size: 2.2rem;
   margin: 10px 0 6px;
+  letter-spacing: -0.02em;
 }
 
 .strategy-subtitle {
@@ -67,15 +138,27 @@
   border: 1px solid var(--line);
   font-size: 0.85rem;
   color: var(--muted);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
 }
 
 .strategy-scorecard {
   min-width: 220px;
   padding: 14px 16px;
   border-radius: 14px;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 100%);
+  border: 1px solid rgba(226, 232, 240, 0.9);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.strategy-scorecard::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  opacity: 0.6;
 }
 
 .strategy-score {
@@ -108,12 +191,34 @@
 }
 
 .strategy-card {
-  background: var(--panel);
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
   border-radius: 18px;
   border: 1px solid var(--line);
   padding: 22px;
   box-shadow: var(--shadow);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+  animation: rise 0.6s ease both;
+  animation-delay: 0.08s;
+}
+
+.strategy-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    rgba(14, 165, 233, 0.7),
+    rgba(20, 184, 166, 0.7),
+    rgba(249, 115, 22, 0.6)
+  );
+}
+
+.strategy-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .strategy-card:hover {
@@ -129,20 +234,67 @@
 }
 
 .strategy-question {
-  background: var(--surface);
+  background: rgba(248, 250, 252, 0.9);
   border-radius: 14px;
   padding: 16px;
-  border: 1px solid var(--line);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  border: 1px solid transparent;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .strategy-question:hover {
   transform: translateY(-1px);
-  border-color: #cbd5f5;
+  border-color: rgba(148, 163, 184, 0.35);
+  box-shadow: 0 14px 26px rgba(15, 23, 42, 0.08);
+}
+
+.strategy-question .badge {
+  background: rgba(14, 165, 233, 0.12) !important;
+  color: #0f172a !important;
+  font-weight: 600;
 }
 
 .strategy-question .form-check {
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.strategy-question .form-check:hover {
+  transform: translateY(-1px);
+}
+
+.strategy-question .form-check-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.strategy-question .form-check-label {
+  font-size: 0.95rem;
+  color: #1f2937;
+  display: block;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #ffffff;
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  cursor: pointer;
+}
+
+.strategy-question .form-check:hover .form-check-label {
+  border-color: rgba(56, 189, 248, 0.6);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
+}
+
+.strategy-question .form-check-input:checked + .form-check-label {
+  border-color: rgba(14, 165, 233, 0.8);
+  background: rgba(224, 242, 254, 0.8);
+  box-shadow: 0 12px 24px rgba(14, 165, 233, 0.18);
+}
+
+.strategy-question .form-check-input:focus-visible + .form-check-label {
+  outline: 2px solid rgba(14, 165, 233, 0.45);
+  outline-offset: 2px;
 }
 
 .strategy-allocation {
@@ -151,11 +303,23 @@
   margin-top: 16px;
 }
 
+.strategy-allocation .progress {
+  height: 0.7rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.08);
+}
+
+.strategy-allocation .progress-bar {
+  border-radius: 999px;
+}
+
 .strategy-profile-tag {
   padding: 6px 12px;
   border-radius: 999px;
-  background: rgba(20, 184, 166, 0.12);
-  color: #0f766e;
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.2), rgba(20, 184, 166, 0.2));
+  color: #0f172a;
   font-weight: 600;
   font-size: 0.9rem;
 }
@@ -179,7 +343,7 @@
   margin-top: 18px;
   padding: 10px 12px;
   border-radius: 12px;
-  background: #ffedd5;
+  background: rgba(249, 115, 22, 0.12);
   color: #9a3412;
   font-size: 0.85rem;
 }
@@ -187,6 +351,28 @@
 .strategy-empty {
   background: linear-gradient(140deg, #0f172a, #1e293b);
   color: #f8fafc;
+  position: relative;
+  overflow: hidden;
+}
+
+.strategy-empty::after {
+  content: "";
+  position: absolute;
+  inset: 40% -30% auto auto;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(14, 165, 233, 0.35),
+    transparent 65%
+  );
+  opacity: 0.8;
+}
+
+.strategy-empty > * {
+  position: relative;
+  z-index: 1;
 }
 
 .strategy-empty h2 {
@@ -205,11 +391,24 @@
 }
 
 .strategy-list div {
-  padding: 10px 12px;
+  padding: 10px 12px 10px 36px;
   border-radius: 12px;
   background: rgba(248, 250, 252, 0.1);
   border: 1px solid rgba(248, 250, 252, 0.12);
   transition: transform 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.strategy-list div::before {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #22c55e);
 }
 
 .strategy-list div:hover {
@@ -230,6 +429,7 @@
   border-radius: 12px;
   background: rgba(248, 250, 252, 0.08);
   transition: transform 0.2s ease, border-color 0.2s ease;
+  border: 1px solid rgba(248, 250, 252, 0.16);
 }
 
 .strategy-band div:hover {
@@ -249,5 +449,27 @@
 
   .strategy-title {
     font-size: 1.9rem;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strategy-hero,
+  .strategy-card,
+  .strategy-question,
+  .strategy-list div,
+  .strategy-band div {
+    animation: none;
+    transition: none;
   }
 }
