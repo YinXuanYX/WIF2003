@@ -1,6 +1,7 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import useThemeStore from '../../stores/useThemeStore'
-import useAuthStore from '../../stores/useAuthStore'
+import useAuthStore from '../../stores/authStore'
+import { mockLogout } from '../../mocks/authHandlers'
 
 const NAV_GROUPS = [
   {
@@ -30,6 +31,14 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
   const location = useLocation()
   const { theme, toggleTheme } = useThemeStore()
   const user = useAuthStore((s) => s.user)
+  const clearUser = useAuthStore((s) => s.clearUser)
+  const navigate = useNavigate()
+
+  const handleLogout = async () => {
+    await mockLogout()
+    clearUser()
+    navigate('/login')
+  }
 
   return (
     <>
@@ -92,7 +101,17 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
             {!collapsed && <span className="sidebar-link__label">{user?.name || 'Profile'}</span>}
           </Link>
           <button
-            className="sidebar-link w-100 border-0 bg-transparent text-start"
+            className="sidebar-link sidebar-action"
+            onClick={handleLogout}
+            title={collapsed ? 'Logout' : undefined}
+          >
+            <span className="sidebar-link__icon">
+              <i className="bi bi-box-arrow-left" />
+            </span>
+            {!collapsed && <span className="sidebar-link__label">Logout</span>}
+          </button>
+          <button
+            className="sidebar-link sidebar-action"
             onClick={toggleTheme}
             title={collapsed ? (theme === 'light' ? 'Dark Mode' : 'Light Mode') : undefined}
           >

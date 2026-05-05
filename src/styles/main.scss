@@ -1,48 +1,25 @@
+// ============================================================
+// Main SCSS Entry File
+// PRD §2.3: Raw Bootstrap SCSS compiled with custom variable
+// overrides. This file is the evidence of SCSS compilation.
+// ============================================================
+
 @use "sass:color";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
-@import "bootstrap-icons/font/bootstrap-icons.css";
 
-$font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
-  sans-serif;
-$font-family-base: $font-family-sans-serif;
+// 1. Load custom variable overrides (BEFORE Bootstrap)
+@import './variables';
 
-// ── PRD-aligned palette ("Executive Clarity") ──
-$body-bg: #f8fafc;
-$body-color: #0f172a;
-$card-bg: rgba(255, 255, 255, 0.72);
-
-$primary: #2563eb;
-$success: #10b981;
-$danger: #ef4444;
-$warning: #f59e0b;
-$info: #06b6d4;
-
-$text-muted: #64748b;
-
-$card-border-radius: 1.25rem;
-$card-border-color: rgba(255, 255, 255, 0.25);
-$card-spacer-y: 1.25rem;
-$card-spacer-x: 1.5rem;
-$card-cap-padding-y: 1rem;
-$card-cap-bg: transparent;
-
-$border-radius: 0.75rem;
-$border-radius-lg: 1rem;
-$border-radius-sm: 0.5rem;
-
-$box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
-$box-shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.03);
-$box-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
-
-$progress-height: 8px;
-$progress-border-radius: 1rem;
-$progress-bg: rgba(0, 0, 0, 0.06);
-
-$navbar-dark-color: rgba(255, 255, 255, 0.85);
-$navbar-dark-hover-color: #ffffff;
-
+// 2. Import full Bootstrap SCSS source
 @import "bootstrap/scss/bootstrap";
+
+// 3. Import custom animations
 @import "./animations";
+
+// 4. Import auth page styles
+@import "./auth";
+
+// 5. Import shared form component styles
+@import "./forms";
 
 // ── Glass tokens (iOS-refined) ──
 :root {
@@ -57,16 +34,19 @@ $navbar-dark-hover-color: #ffffff;
   --nav-hover-bg: rgba(0, 0, 0, 0.03);
 }
 
+// ============================================================
+// 4. Dark Mode Overrides ("Midnight Premium")
+// ============================================================
 [data-bs-theme="dark"] {
-  --bs-body-bg: #0f172a;
-  --bs-body-color: #f8fafc;
+  --bs-body-bg: #{$dark-body-bg};
+  --bs-body-color: #{$dark-body-color};
   --bs-card-bg: rgba(30, 41, 59, 0.55);
   --bs-card-border-color: rgba(255, 255, 255, 0.06);
-  --bs-primary: #3b82f6;
+  --bs-primary: #{$dark-primary};
   --bs-primary-rgb: 59, 130, 246;
-  --bs-success: #34d399;
+  --bs-success: #{$dark-success};
   --bs-success-rgb: 52, 211, 153;
-  --bs-danger: #f87171;
+  --bs-danger: #{$dark-danger};
   --bs-danger-rgb: 248, 113, 113;
   --bs-secondary-bg: #1e293b;
   --bs-tertiary-bg: #162032;
@@ -79,7 +59,7 @@ $navbar-dark-hover-color: #ffffff;
   --nav-hover-bg: rgba(255, 255, 255, 0.04);
 
   .text-muted {
-    color: #94a3b8 !important;
+    color: #{$dark-text-muted} !important;
   }
 
   .card,
@@ -132,6 +112,9 @@ $navbar-dark-hover-color: #ffffff;
   }
 }
 
+// ============================================================
+// 5. Global Custom Styles
+// ============================================================
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -513,6 +496,25 @@ body {
 .sidebar-footer {
   padding: 0.75rem;
   border-top: var(--glass-border);
+}
+
+// Sidebar action buttons (logout, theme toggle) — transparent, no default button chrome
+.sidebar-action {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--bs-body-color);
+  opacity: 0.75;
+  transition: opacity 0.2s, background-color 0.2s, transform 0.15s;
+
+  &:hover {
+    opacity: 1;
+    background: var(--nav-hover-bg);
+    transform: translateX(2px);
+  }
 }
 
 // ── Sidebar Toggle (mobile — now only used as fallback) ──
