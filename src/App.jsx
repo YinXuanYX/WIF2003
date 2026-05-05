@@ -3,6 +3,7 @@ import AuthInitializer from "./components/auth/AuthInitializer";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AppShell from "./components/layout/AppShell";
 import DashboardPage from "./pages/DashboardPage";
+import CashFlowPage from "./pages/CashFlowPage";
 import ROICalculator from "./components/ROIcalculator";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -22,6 +23,7 @@ export default function App() {
             <Route element={<AppShell />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
               <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/cashflow" element={<CashFlowPage />} />
               <Route path="/calculator" element={<ROICalculator />} />
               <Route path="/profile" element={<ProfilePage />} />
               {/* Other team members' routes will be added here */}

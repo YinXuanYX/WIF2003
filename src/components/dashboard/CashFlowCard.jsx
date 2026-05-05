@@ -2,11 +2,9 @@ import { useCashFlow } from '../../hooks/useCashFlow'
 import SkeletonCard from './SkeletonCard'
 
 function CashFlowCard({ animationOrder = 0 }) {
-  const { data, isLoading } = useCashFlow()
+  const { data, isLoading, totalExpenses, disposableIncome } = useCashFlow()
 
   if (isLoading) return <SkeletonCard lines={4} />
-
-  const totalExpenses = data.expenses.reduce((sum, e) => sum + e.amount, 0)
 
   return (
     <div
@@ -62,7 +60,7 @@ function CashFlowCard({ animationOrder = 0 }) {
           <div>
             <div className="text-muted small mb-1">Disposable Income</div>
             <div className="stat-value text-primary">
-              RM {data.disposableIncome.toLocaleString()}
+              RM {disposableIncome.toLocaleString()}
             </div>
           </div>
           <span
