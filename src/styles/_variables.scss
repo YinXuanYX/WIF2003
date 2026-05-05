@@ -1,0 +1,23 @@
+// ============================================================
+// Bootstrap Variable Overrides — PRD Section 3 Design Spec
+// These must be defined BEFORE importing Bootstrap's SCSS source.
+// ============================================================
+
+// ── Light Mode ("Executive Clarity") ──
+$body-bg:    #F8FAFC;   // Soft Slate White
+$card-bg:    #FFFFFF;   // Pure White
+$primary:    #2563EB;   // Royal Blue
+$success:    #10B981;   // Vibrant Emerald Green
+$danger:     #EF4444;   // Crisp Red
+$body-color: #0F172A;   // Deep Slate (PRD: $text-color)
+$text-muted: #64748B;   // Cool Gray
+
+// ── Dark Mode custom properties ──
+// Applied via [data-bs-theme="dark"] on <html> or <body>
+$dark-body-bg:    #0F172A;   // Deep Midnight Slate
+$dark-card-bg:    #1E293B;   // Elevated Slate
+$dark-primary:    #3B82F6;   // Brighter Neon Blue
+$dark-success:    #34D399;   // Luminous Mint Green
+$dark-danger:     #F87171;   // Soft Coral Red
+$dark-body-color: #F8FAFC;   // Off-White
+$dark-text-muted: #94A3B8;   // Light Slate
