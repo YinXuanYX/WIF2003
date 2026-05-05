@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCashFlow } from '../hooks/useCashFlow'
 import { useGoalCalculations } from '../hooks/useGoalCalculations'
 import useGoalsStore from '../stores/useGoalsStore'
@@ -6,6 +6,9 @@ import GoalCard from '../components/goals/GoalCard'
 import GoalSkeleton from '../components/goals/GoalSkeleton'
 import GoalFormModal from '../components/goals/GoalFormModal'
 import DeleteConfirmModal from '../components/goals/DeleteConfirmModal'
+import GoalEmptyState from '../components/goals/GoalEmptyState'
+import GoalWarningBanner from '../components/goals/GoalWarningBanner'
+import GoalLimitWarning from '../components/goals/GoalLimitWarning'
 
 function GoalsPage() {
   const { data: cashflow, isLoading: cashflowLoading } = useCashFlow()
@@ -20,15 +23,31 @@ function GoalsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deletingGoal, setDeletingGoal] = useState(null)
 
+  // Warning dismiss state
+  const [dismissedOverextend, setDismissedOverextend] = useState(false)
+  const [dismissedLimit, setDismissedLimit] = useState(false)
+
   const {
+    isNewUser,
     enrichedGoals,
     totalTargetAmount,
     totalSavedAmount,
     overallProgress,
     totalRequiredMonthly,
     disposableIncome,
+    isOverextended,
+    hasGoalLimitWarning,
     goalCount,
   } = useGoalCalculations(goals, cashflow)
+
+  // Re-show dismissed warnings when the underlying data changes
+  useEffect(() => {
+    setDismissedOverextend(false)
+  }, [isOverextended, totalRequiredMonthly])
+
+  useEffect(() => {
+    setDismissedLimit(false)
+  }, [goalCount])
 
   // CRUD handlers
   const handleAddClick = () => {
@@ -73,6 +92,31 @@ function GoalsPage() {
     )
   }
 
+  // New user — no income set: show empty state, disable goal creation
+  if (isNewUser) {
+    return (
+      <div className="container-fluid px-4 py-4">
+        <div className="goals-header mb-4 animate-fade-in-up">
+          <div>
+            <h1 className="goals-header__title">📎 Financial Goals</h1>
+            <p className="goals-header__subtitle">
+              Set up your financial baseline to get started
+            </p>
+          </div>
+          <button
+            className="btn btn-primary btn-add-goal"
+            id="btn-add-goal"
+            disabled
+            title="Complete your cash flow setup first"
+          >
+            + Add Goal
+          </button>
+        </div>
+        <GoalEmptyState />
+      </div>
+    )
+  }
+
   return (
     <div className="container-fluid px-4 py-4">
       {/* Page header */}
@@ -94,7 +138,21 @@ function GoalsPage() {
         </button>
       </div>
 
-      {/* Warning banners will be added in Phase D */}
+      {/* Warning banners */}
+      {isOverextended && !dismissedOverextend && (
+        <GoalWarningBanner
+          totalRequiredMonthly={totalRequiredMonthly}
+          disposableIncome={disposableIncome}
+          onDismiss={() => setDismissedOverextend(true)}
+        />
+      )}
+
+      {hasGoalLimitWarning && !dismissedLimit && (
+        <GoalLimitWarning
+          goalCount={goalCount}
+          onDismiss={() => setDismissedLimit(true)}
+        />
+      )}
 
       {/* Goals grid */}
       {goalCount === 0 ? (
