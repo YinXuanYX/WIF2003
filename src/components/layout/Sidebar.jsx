@@ -101,15 +101,17 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
             {!collapsed && <span className="sidebar-link__label">{user?.name || 'Profile'}</span>}
           </Link>
           <button
-            className="sidebar-link w-100 border-0"
+            className="sidebar-link sidebar-action"
             onClick={handleLogout}
             title={collapsed ? 'Logout' : undefined}
           >
-            <span className="sidebar-link__icon">🚪</span>
+            <span className="sidebar-link__icon">
+              <i className="bi bi-box-arrow-left" />
+            </span>
             {!collapsed && <span className="sidebar-link__label">Logout</span>}
           </button>
           <button
-            className="sidebar-link w-100 border-0"
+            className="sidebar-link sidebar-action"
             onClick={toggleTheme}
             title={collapsed ? (theme === 'light' ? 'Dark Mode' : 'Light Mode') : undefined}
           >

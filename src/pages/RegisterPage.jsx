@@ -1,36 +1,44 @@
 // ============================================================
-// RegisterPage — PRD §Module 1
+// RegisterPage — PRD §Module 1 (Redesigned with iOS Glassmorphism)
 // Uses react-hook-form + Zod for validation.
 // Calls mockRegister via useMutation, auto-logs-in on success.
 // Phase 2: swap mockRegister with fetch('/api/auth/register', ...).
 // ============================================================
 
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerSchema } from '../validations/authSchemas';
 import { mockRegister } from '../mocks/authHandlers';
 import useAuthStore from '../stores/authStore';
+import AuthLayout from '../components/auth/AuthLayout';
+import PasswordStrengthMeter from '../components/auth/PasswordStrengthMeter';
 
 export default function RegisterPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const setUser = useAuthStore((state) => state.setUser);
   const [serverError, setServerError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const {
     register: formRegister,
     handleSubmit,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: { name: '', email: '', password: '', confirmPassword: '' },
   });
 
+  // Watch password field for strength meter
+  const passwordValue = useWatch({ control, name: 'password' });
+
   const registerMutation = useMutation({
-    mutationFn: mockRegister, // Phase 2: replace with real fetch
+    mutationFn: mockRegister,
     onSuccess: (data) => {
       setUser(data.user);
       queryClient.setQueryData(['auth', 'me'], data);
@@ -43,141 +51,160 @@ export default function RegisterPage() {
 
   const onSubmit = (data) => {
     setServerError('');
-    // Don't send confirmPassword to the backend
     const { confirmPassword, ...payload } = data;
     registerMutation.mutate(payload);
   };
 
   return (
-    <div className="min-vh-100 d-flex align-items-center justify-content-center"
-         style={{ background: 'var(--bs-body-bg)' }}>
-      <div className="w-100" style={{ maxWidth: '420px', padding: '0 1rem' }}>
+    <AuthLayout title="Create your account" subtitle="Start planning your financial future">
+      {/* Server Error */}
+      {serverError && (
+        <div className="auth-alert" role="alert">
+          <i className="bi bi-exclamation-circle-fill" />
+          <span>{serverError}</span>
+        </div>
+      )}
 
-        {/* Brand */}
-        <div className="text-center mb-4">
-          <div className="d-inline-flex align-items-center justify-content-center rounded-3 mb-3"
-               style={{
-                 width: '48px', height: '48px',
-                 background: 'linear-gradient(135deg, var(--bs-primary), #60a5fa)',
-               }}>
-            <span style={{ fontSize: '1.5rem' }}>💰</span>
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        {/* Name */}
+        <div className="auth-input-group" style={{ animationDelay: '0.1s' }}>
+          <label htmlFor="register-name" className="auth-input-label">
+            Full Name
+          </label>
+          <div className="auth-input-wrapper">
+            <i className="bi bi-person auth-input-icon" />
+            <input
+              id="register-name"
+              type="text"
+              className={`auth-input ${errors.name ? 'is-invalid' : ''}`}
+              placeholder="John Doe"
+              autoComplete="name"
+              autoFocus
+              {...formRegister('name')}
+            />
           </div>
-          <h1 className="h4 fw-bold mb-1">Create your account</h1>
-          <p className="text-muted small">Start planning your financial future</p>
+          {errors.name && (
+            <div className="auth-input-error">
+              <i className="bi bi-exclamation-circle" />
+              <span>{errors.name.message}</span>
+            </div>
+          )}
         </div>
 
-        {/* Card */}
-        <div className="card glass-card border-0 shadow-sm">
-          <div className="card-body p-4">
-
-            {/* Server Error Alert */}
-            {serverError && (
-              <div className="alert alert-danger d-flex align-items-center py-2 px-3 mb-3" role="alert">
-                <span className="me-2">⚠️</span>
-                <small>{serverError}</small>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit(onSubmit)} noValidate>
-              {/* Name */}
-              <div className="mb-3">
-                <label htmlFor="register-name" className="form-label small fw-semibold">
-                  Full Name
-                </label>
-                <input
-                  id="register-name"
-                  type="text"
-                  className={`form-control ${errors.name ? 'is-invalid' : ''}`}
-                  placeholder="John Doe"
-                  autoComplete="name"
-                  {...formRegister('name')}
-                />
-                {errors.name && (
-                  <div className="invalid-feedback">{errors.name.message}</div>
-                )}
-              </div>
-
-              {/* Email */}
-              <div className="mb-3">
-                <label htmlFor="register-email" className="form-label small fw-semibold">
-                  Email address
-                </label>
-                <input
-                  id="register-email"
-                  type="email"
-                  className={`form-control ${errors.email ? 'is-invalid' : ''}`}
-                  placeholder="you@example.com"
-                  autoComplete="email"
-                  {...formRegister('email')}
-                />
-                {errors.email && (
-                  <div className="invalid-feedback">{errors.email.message}</div>
-                )}
-              </div>
-
-              {/* Password */}
-              <div className="mb-3">
-                <label htmlFor="register-password" className="form-label small fw-semibold">
-                  Password
-                </label>
-                <input
-                  id="register-password"
-                  type="password"
-                  className={`form-control ${errors.password ? 'is-invalid' : ''}`}
-                  placeholder="Min 8 chars, 1 uppercase, 1 number"
-                  autoComplete="new-password"
-                  {...formRegister('password')}
-                />
-                {errors.password && (
-                  <div className="invalid-feedback">{errors.password.message}</div>
-                )}
-              </div>
-
-              {/* Confirm Password */}
-              <div className="mb-4">
-                <label htmlFor="register-confirm" className="form-label small fw-semibold">
-                  Confirm Password
-                </label>
-                <input
-                  id="register-confirm"
-                  type="password"
-                  className={`form-control ${errors.confirmPassword ? 'is-invalid' : ''}`}
-                  placeholder="Re-enter your password"
-                  autoComplete="new-password"
-                  {...formRegister('confirmPassword')}
-                />
-                {errors.confirmPassword && (
-                  <div className="invalid-feedback">{errors.confirmPassword.message}</div>
-                )}
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className="btn btn-primary w-100 fw-semibold"
-                disabled={registerMutation.isPending}
-              >
-                {registerMutation.isPending ? (
-                  <>
-                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true" />
-                    Creating account...
-                  </>
-                ) : (
-                  'Create Account'
-                )}
-              </button>
-            </form>
+        {/* Email */}
+        <div className="auth-input-group" style={{ animationDelay: '0.15s' }}>
+          <label htmlFor="register-email" className="auth-input-label">
+            Email address
+          </label>
+          <div className="auth-input-wrapper">
+            <i className="bi bi-envelope auth-input-icon" />
+            <input
+              id="register-email"
+              type="email"
+              className={`auth-input ${errors.email ? 'is-invalid' : ''}`}
+              placeholder="you@example.com"
+              autoComplete="email"
+              {...formRegister('email')}
+            />
           </div>
+          {errors.email && (
+            <div className="auth-input-error">
+              <i className="bi bi-exclamation-circle" />
+              <span>{errors.email.message}</span>
+            </div>
+          )}
         </div>
 
-        {/* Login link */}
-        <p className="text-center text-muted small mt-3">
-          Already have an account?{' '}
-          <Link to="/login" className="fw-semibold text-decoration-none">
-            Sign in
-          </Link>
-        </p>
+        {/* Password */}
+        <div className="auth-input-group" style={{ animationDelay: '0.2s' }}>
+          <label htmlFor="register-password" className="auth-input-label">
+            Password
+          </label>
+          <div className="auth-input-wrapper">
+            <i className="bi bi-lock auth-input-icon" />
+            <input
+              id="register-password"
+              type={showPassword ? 'text' : 'password'}
+              className={`auth-input auth-input--has-toggle ${errors.password ? 'is-invalid' : ''}`}
+              placeholder="Min 8 chars, 1 uppercase, 1 number"
+              autoComplete="new-password"
+              {...formRegister('password')}
+            />
+            <button
+              type="button"
+              className="auth-input-toggle"
+              onClick={() => setShowPassword((v) => !v)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              <i className={`bi ${showPassword ? 'bi-eye-slash' : 'bi-eye'}`} />
+            </button>
+          </div>
+          {errors.password && (
+            <div className="auth-input-error">
+              <i className="bi bi-exclamation-circle" />
+              <span>{errors.password.message}</span>
+            </div>
+          )}
+          <PasswordStrengthMeter password={passwordValue} />
+        </div>
+
+        {/* Confirm Password */}
+        <div className="auth-input-group" style={{ animationDelay: '0.25s' }}>
+          <label htmlFor="register-confirm" className="auth-input-label">
+            Confirm Password
+          </label>
+          <div className="auth-input-wrapper">
+            <i className="bi bi-shield-lock auth-input-icon" />
+            <input
+              id="register-confirm"
+              type={showConfirm ? 'text' : 'password'}
+              className={`auth-input auth-input--has-toggle ${errors.confirmPassword ? 'is-invalid' : ''}`}
+              placeholder="Re-enter your password"
+              autoComplete="new-password"
+              {...formRegister('confirmPassword')}
+            />
+            <button
+              type="button"
+              className="auth-input-toggle"
+              onClick={() => setShowConfirm((v) => !v)}
+              aria-label={showConfirm ? 'Hide password' : 'Show password'}
+              tabIndex={-1}
+            >
+              <i className={`bi ${showConfirm ? 'bi-eye-slash' : 'bi-eye'}`} />
+            </button>
+          </div>
+          {errors.confirmPassword && (
+            <div className="auth-input-error">
+              <i className="bi bi-exclamation-circle" />
+              <span>{errors.confirmPassword.message}</span>
+            </div>
+          )}
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="auth-btn"
+          disabled={registerMutation.isPending}
+          style={{ animationDelay: '0.3s' }}
+        >
+          {registerMutation.isPending ? (
+            <>
+              <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true" />
+              Creating account...
+            </>
+          ) : (
+            'Create Account'
+          )}
+        </button>
+      </form>
+
+      {/* Footer */}
+      <div className="auth-footer">
+        Already have an account?{' '}
+        <Link to="/login">Sign in</Link>
       </div>
-    </div>
+    </AuthLayout>
   );
 }

@@ -15,6 +15,12 @@
 // 3. Import custom animations
 @import "./animations";
 
+// 4. Import auth page styles
+@import "./auth";
+
+// 5. Import shared form component styles
+@import "./forms";
+
 // ── Glass tokens (iOS-refined) ──
 :root {
   --glass-bg: rgba(255, 255, 255, 0.78);
@@ -427,6 +433,25 @@ body {
 .sidebar-footer {
   padding: 0.75rem;
   border-top: var(--glass-border);
+}
+
+// Sidebar action buttons (logout, theme toggle) — transparent, no default button chrome
+.sidebar-action {
+  width: 100%;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--bs-body-color);
+  opacity: 0.75;
+  transition: opacity 0.2s, background-color 0.2s, transform 0.15s;
+
+  &:hover {
+    opacity: 1;
+    background: var(--nav-hover-bg);
+    transform: translateX(2px);
+  }
 }
 
 // ── Sidebar Toggle (mobile — now only used as fallback) ──
