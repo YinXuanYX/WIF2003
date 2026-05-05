@@ -1,11 +1,11 @@
 function SkeletonCard({ lines = 3 }) {
-  const widths = ['75%', '50%', '90%', '60%', '80%', '45%']
+  const widths = ['75%', '50%', '90%', '60%', '80%', '45%', '70%', '55%']
 
   return (
-    <div className="card card-dashboard h-100">
+    <div className="glass-card h-100">
       <div className="card-body">
         <div className="placeholder-glow">
-          <span className="placeholder col-4 mb-3" style={{ height: '1rem' }} />
+          <span className="placeholder col-4 mb-3" style={{ height: '0.75rem' }} />
           {Array.from({ length: lines }, (_, i) => (
             <span
               key={i}
