@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Splash from './components/Splash'
 import AuthInitializer from "./components/auth/AuthInitializer";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AppShell from "./components/layout/AppShell";
@@ -14,7 +15,9 @@ import InvestmentStrategy from "./components/InvestmentStrategy";
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <>
+      <Splash />
+      <BrowserRouter>
       <AuthInitializer>
         <Routes>
           {/* Public routes */}
@@ -37,5 +40,6 @@ export default function App() {
         </Routes>
       </AuthInitializer>
     </BrowserRouter>
+    </>
   );
 }
