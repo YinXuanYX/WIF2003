@@ -1,4 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import PigIcon from '../../assets/PigIcon.png'
 import useThemeStore from '../../stores/useThemeStore'
 import useAuthStore from '../../stores/authStore'
 import { mockLogout } from '../../mocks/authHandlers'
@@ -52,7 +53,7 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
           {!collapsed && (
             <Link to="/dashboard" className="sidebar-brand" onClick={onClose}>
               <div className="sidebar-brand__icon">
-                <i className="bi bi-currency-exchange" />
+                <img src={PigIcon} alt="FinPlan" />
               </div>
               <span>FinPlan</span>
             </Link>

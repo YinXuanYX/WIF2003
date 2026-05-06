@@ -44,6 +44,17 @@ if (!setSplashImage()) {
   document.addEventListener('DOMContentLoaded', setSplashImage)
 }
 
+// Set site favicon to PigIcon (imported asset). Creates or updates <link rel="icon">.
+;(function setFavicon(){
+  try{
+    const link = document.querySelector('link[rel="icon"]') || document.createElement('link')
+    link.rel = 'icon'
+    link.type = 'image/png'
+    link.href = pigIcon
+    if (!document.querySelector('link[rel="icon"]')) document.head.appendChild(link)
+  }catch(e){ /* ignore */ }
+})()
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

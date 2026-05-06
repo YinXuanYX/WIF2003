@@ -5,6 +5,8 @@
 // Mobile: Hero collapses to compact header
 // ============================================================
 
+import PigIcon from '../../assets/PigIcon.png'
+
 export default function AuthLayout({ title, subtitle, children }) {
   return (
     <div className="auth-page">
@@ -12,7 +14,7 @@ export default function AuthLayout({ title, subtitle, children }) {
       <div className="auth-hero">
         <div className="auth-hero__content">
           <div className="auth-hero__logo">
-            <i className="bi bi-currency-exchange" />
+            <img src={PigIcon} alt="FinPlan logo" />
           </div>
           <h2 className="auth-hero__title">
             Take control of your
@@ -41,7 +43,7 @@ export default function AuthLayout({ title, subtitle, children }) {
           {/* Brand — mobile only (desktop has hero) */}
           <div className="auth-brand">
             <div className="auth-brand__icon">
-              <i className="bi bi-currency-exchange" />
+              <img src={PigIcon} alt="FinPlan logo" />
             </div>
             <h1 className="auth-brand__title">{title}</h1>
             <p className="auth-brand__subtitle">{subtitle}</p>
