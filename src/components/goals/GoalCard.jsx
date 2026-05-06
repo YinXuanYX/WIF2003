@@ -134,7 +134,11 @@ function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
 
         {/* Progress bar */}
         <div className="goal-card__progress">
-          <div className="progress">
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <span className="text-muted small fw-medium">Progress</span>
+            <span className="fw-bold" style={{ color: 'var(--text-primary)' }}>{progressPercent}%</span>
+          </div>
+          <div className="progress" style={{ height: '8px', borderRadius: '1rem', overflow: 'hidden' }}>
             <div
               className={`progress-bar ${getProgressColor(progressPercent)}`}
               role="progressbar"
@@ -142,9 +146,7 @@ function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
               aria-valuenow={progressPercent}
               aria-valuemin={0}
               aria-valuemax={100}
-            >
-              {progressPercent}%
-            </div>
+            />
           </div>
         </div>
 
