@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { calculatorSchema } from "../../schemas/calculator.schema";
@@ -15,38 +14,29 @@ function ROIForm({
   const {
     watch,
     setValue,
-    formState: { errors },
+    handleSubmit,
+    formState: { errors, isValid },
   } = useForm({
     resolver: zodResolver(calculatorSchema),
     defaultValues,
     mode: "onChange",
   });
 
-  // Watch individual fields to avoid object dependencies
+  // Watch individual fields for display
   const principal = watch("principal");
   const rate = watch("rate");
   const years = watch("years");
   const compounding = watch("compounding");
 
-  // Notify parent component instantly when inputs are valid
-  useEffect(() => {
-    // Basic validation check before pushing to parent
-    if (
-      principal !== "" &&
-      !isNaN(principal) &&
-      rate !== "" &&
-      !isNaN(rate) &&
-      years !== "" &&
-      !isNaN(years)
-    ) {
-      onChange({
-        principal: Number(principal),
-        rate: Number(rate),
-        years: Number(years),
-        compounding: Number(compounding),
-      });
-    }
-  }, [principal, rate, years, compounding, onChange]);
+  // Handle form submission - only calculate when button is clicked
+  const onCalculate = handleSubmit((formData) => {
+    onChange({
+      principal: Number(formData.principal),
+      rate: Number(formData.rate),
+      years: Number(formData.years),
+      compounding: Number(formData.compounding),
+    });
+  });
 
   const handleFillGoal = (goal) => {
     const amountNeeded = Math.max(0, goal.targetAmount - goal.savedAmount);
@@ -191,6 +181,33 @@ function ROIForm({
             </div>
           )}
         </div>
+
+        {/* Calculate Button */}
+        <button
+          type="button"
+          onClick={onCalculate}
+          disabled={!isValid}
+          className="btn btn-primary w-100 mt-3"
+          style={{
+            background: isValid
+              ? "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)"
+              : "#cbd5e1",
+            border: "none",
+            borderRadius: "0.75rem",
+            fontWeight: "600",
+            cursor: isValid ? "pointer" : "not-allowed",
+            transition: "all 0.3s ease",
+          }}
+          onMouseEnter={(e) => {
+            if (isValid) e.target.style.transform = "translateY(-2px)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+          }}
+        >
+          <i className="bi bi-calculator me-2" />
+          Calculate ROI
+        </button>
       </div>
     </GlassCard>
   );
