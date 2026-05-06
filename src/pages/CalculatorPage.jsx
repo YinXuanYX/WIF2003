@@ -77,7 +77,8 @@ function CalculatorPage() {
         <div className="col-lg-8">
           <ROIResults
             hasCalculated={hasCalculated}
-            principal={calculationResult?.inputs.principal || 0}
+            inputs={calculationResult?.inputs}
+            principal={calculationResult?.inputs?.principal || 0}
             futureValue={calculationResult?.futureValue || 0}
             netProfit={calculationResult?.netProfit || 0}
             roiPercent={calculationResult?.roiPercent || 0}
