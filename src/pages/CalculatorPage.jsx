@@ -1,69 +1,81 @@
-import { useState } from 'react'
-import ROIForm from '../components/calculator/ROIForm'
-import ROIResults from '../components/calculator/ROIResults'
-import InvestmentComparison from '../components/calculator/InvestmentComparison'
-import { useGoals } from '../hooks/useGoals'
-import { useCashFlow } from '../hooks/useCashFlow'
+import { useState, useCallback } from "react";
+import ROIForm from "../components/calculator/ROIForm";
+import ROIResults from "../components/calculator/ROIResults";
+import InvestmentComparison from "../components/calculator/InvestmentComparison";
+import { useGoals } from "../hooks/useGoals";
+import { useCashFlow } from "../hooks/useCashFlow";
 
-function calculateCompoundInterest(principal, ratePercent, years, compoundingFrequency) {
-  const r = ratePercent / 100
-  const n = compoundingFrequency
-  const t = years
-  const amount = principal * Math.pow(1 + r / n, n * t)
-  return amount
+function calculateCompoundInterest(
+  principal,
+  ratePercent,
+  years,
+  compoundingFrequency,
+) {
+  const r = ratePercent / 100;
+  const n = compoundingFrequency;
+  const t = years;
+  const amount = principal * Math.pow(1 + r / n, n * t);
+  return amount;
 }
 
 function CalculatorPage() {
-  const [calculationResult, setCalculationResult] = useState(null)
+  const [calculationResult, setCalculationResult] = useState(null);
 
   // Context-aware data as per PRD
-  const { data: goals = [] } = useGoals()
-  const { disposableIncome } = useCashFlow()
+  const { data: goals = [] } = useGoals();
+  const { disposableIncome } = useCashFlow();
 
-  const handleCalculate = (data) => {
-    const { principal, rate, years, compounding } = data
+  const handleCalculate = useCallback((data) => {
+    const { principal, rate, years, compounding } = data;
 
-    
-    const futureValue = calculateCompoundInterest(principal, rate, years, compounding)
-    const netProfit = futureValue - principal
-    const roiPercent = principal > 0 ? (netProfit / principal) * 100 : 0
+    const futureValue = calculateCompoundInterest(
+      principal,
+      rate,
+      years,
+      compounding,
+    );
+    const netProfit = futureValue - principal;
+    const roiPercent = principal > 0 ? (netProfit / principal) * 100 : 0;
 
     setCalculationResult({
       inputs: data,
       futureValue,
       netProfit,
-      roiPercent
-    })
-  }
+      roiPercent,
+    });
+  }, []);
 
-  const hasCalculated = calculationResult !== null
+  const hasCalculated = calculationResult !== null;
 
   return (
     <div className="calculator-page animate-fade-in-up">
       <div className="dashboard-greeting mb-4">
         <h1>ROI Calculator</h1>
-        <p>Project your investment growth using compound interest and compare different vehicles.</p>
+        <p>
+          Project your investment growth using compound interest and compare
+          different vehicles.
+        </p>
       </div>
 
       <div className="row g-4">
         {/* Input Form */}
         <div className="col-lg-4">
-          <ROIForm 
+          <ROIForm
             goals={goals}
             disposableIncome={disposableIncome}
             defaultValues={{
               principal: 10000,
               rate: 5,
               years: 10,
-              compounding: 1
+              compounding: 1,
             }}
-            onChange={handleCalculate} 
+            onChange={handleCalculate}
           />
         </div>
 
         {/* Results */}
         <div className="col-lg-8">
-          <ROIResults 
+          <ROIResults
             hasCalculated={hasCalculated}
             principal={calculationResult?.inputs.principal || 0}
             futureValue={calculationResult?.futureValue || 0}
@@ -74,7 +86,7 @@ function CalculatorPage() {
 
         {/* Comparison Tool */}
         <div className="col-12">
-          <InvestmentComparison 
+          <InvestmentComparison
             hasCalculated={hasCalculated}
             principal={calculationResult?.inputs.principal || 0}
             years={calculationResult?.inputs.years || 0}
@@ -83,7 +95,7 @@ function CalculatorPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default CalculatorPage
+export default CalculatorPage;
