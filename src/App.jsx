@@ -3,6 +3,7 @@ import AuthInitializer from "./components/auth/AuthInitializer";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AppShell from "./components/layout/AppShell";
 import DashboardPage from "./pages/DashboardPage";
+import GoalsPage from "./pages/GoalsPage";
 import CashFlowPage from "./pages/CashFlowPage";
 import CalculatorPage from "./pages/CalculatorPage";
 import MarketInsightsPage from "./pages/MarketInsightsPage";
@@ -30,6 +31,7 @@ export default function App() {
               <Route path="/market" element={<MarketInsightsPage />} />
               <Route path="/calculator" element={<CalculatorPage />} />
               <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/goals" element={<GoalsPage />} />
             </Route>
           </Route>
         </Routes>
