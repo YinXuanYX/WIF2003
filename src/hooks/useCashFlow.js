@@ -14,7 +14,7 @@ const QUERY_KEY = ['cashflow']
 export const useCashFlow = () => {
   const queryClient = useQueryClient()
 
-  // ── Read ──
+  // 
   const { data, isLoading, isError } = useQuery({
     queryKey: QUERY_KEY,
     queryFn: () => simulateDelay(structuredClone(cashflowMock)),
@@ -22,7 +22,7 @@ export const useCashFlow = () => {
     gcTime: 5 * 60 * 1000,
   })
 
-  // ── Derived values ──
+  // 
   const totalExpenses = useMemo(
     () => (data?.expenses ?? []).reduce((sum, e) => sum + e.amount, 0),
     [data?.expenses],
@@ -36,7 +36,7 @@ export const useCashFlow = () => {
   const isEmptyState =
     !isLoading && data?.netIncome === 0 && (data?.expenses?.length ?? 0) === 0
 
-  // ── Mutations (optimistic, cache-only) ──
+  // 
 
   /** Update the monthly net income */
   const updateIncomeMutation = useMutation({

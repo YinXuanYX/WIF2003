@@ -1,4 +1,4 @@
-// ── Cash Flow Mock Data ──
+// 
 // Toggle the default export between populated/empty to demo both states.
 
 export const cashflowPopulated = {

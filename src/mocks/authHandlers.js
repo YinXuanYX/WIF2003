@@ -1,13 +1,10 @@
-// ============================================================
 // Mock Auth API Handlers
 // Simulates POST /api/auth/login, POST /api/auth/register,
 // GET /api/auth/me, and POST /api/auth/logout.
 //
 // Uses a module-scoped `currentSession` variable to mimic
 // the HttpOnly cookie. All response shapes match the real
-// backend contract so Phase 2 requires only swapping the
-// data source in hooks/mutations — zero component changes.
-// ============================================================
+// backend contract.
 
 import { mockUsers } from './users';
 
@@ -23,9 +20,7 @@ function sanitizeUser(user) {
   return safeUser;
 }
 
-// ─────────────────────────────────────────────────────────────
 // POST /api/auth/login
-// ─────────────────────────────────────────────────────────────
 export function mockLogin({ email, password }) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -52,9 +47,7 @@ export function mockLogin({ email, password }) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // POST /api/auth/register
-// ─────────────────────────────────────────────────────────────
 export function mockRegister({ name, email, password }) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -90,12 +83,10 @@ export function mockRegister({ name, email, password }) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // GET /api/auth/me  (Session Rehydration)
-// PRD §Module 1: Validates the HttpOnly cookie and checks
+// Validates the HttpOnly cookie and checks
 // isActive before returning user data. Returns 401 if no
 // session or account is deactivated.
-// ─────────────────────────────────────────────────────────────
 export function mockGetMe() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -115,9 +106,7 @@ export function mockGetMe() {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // POST /api/auth/logout
-// ─────────────────────────────────────────────────────────────
 export function mockLogout() {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -127,9 +116,7 @@ export function mockLogout() {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // PUT /api/auth/profile  (Update profile info)
-// ─────────────────────────────────────────────────────────────
 export function mockUpdateProfile({ name, email }) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -159,9 +146,7 @@ export function mockUpdateProfile({ name, email }) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // PUT /api/auth/password  (Change password)
-// ─────────────────────────────────────────────────────────────
 export function mockChangePassword({ currentPassword, newPassword }) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -185,10 +170,8 @@ export function mockChangePassword({ currentPassword, newPassword }) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // PATCH /api/auth/deactivate  (Set isActive = false)
-// PRD §Module 1: Temporary deactivation, does NOT delete data.
-// ─────────────────────────────────────────────────────────────
+// Temporary deactivation, does NOT delete data.
 export function mockDeactivateAccount() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -207,10 +190,8 @@ export function mockDeactivateAccount() {
   });
 }
 
-// ─────────────────────────────────────────────────────────────
 // DELETE /api/auth/account  (Permanent deletion + cascade)
-// PRD §Module 1: Executes cascade delete of Goals & CashFlow.
-// ─────────────────────────────────────────────────────────────
+// Executes cascade delete of Goals & CashFlow.
 export function mockDeleteAccount() {
   return new Promise((resolve, reject) => {
     setTimeout(() => {

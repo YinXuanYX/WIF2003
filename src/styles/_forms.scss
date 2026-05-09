@@ -1,10 +1,8 @@
-// ============================================================
 // Shared Form Component Styles — Glass-style inputs & buttons
 // Used inside the app shell (Profile, CashFlow, etc.)
 // Adapts to both light and dark themes.
-// ============================================================
 
-// ── Form Input Group ──
+// 
 .form-input-group {
   margin-bottom: 1.25rem;
 }
@@ -110,7 +108,7 @@
   }
 }
 
-// ── Form Button ──
+// 
 .form-btn {
   display: inline-flex;
   align-items: center;
@@ -169,7 +167,7 @@
   }
 }
 
-// ── Dark Mode Adjustments ──
+// 
 [data-bs-theme="dark"] {
   .form-input-field {
     background: rgba(255, 255, 255, 0.05);

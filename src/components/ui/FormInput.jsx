@@ -1,9 +1,7 @@
-// ============================================================
 // FormInput — Reusable glass-style input with leading icon
 // Used across Profile, CashFlow, and other form pages.
 // Follows the same visual language as AuthInput but works
 // inside the app shell (not full-page auth layout).
-// ============================================================
 
 import { useState } from 'react';
 

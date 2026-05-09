@@ -1,7 +1,5 @@
-// ============================================================
 // FormButton — Reusable gradient button with loading state
 // Same visual language as AuthButton, for in-app forms.
-// ============================================================
 
 export default function FormButton({
   children,

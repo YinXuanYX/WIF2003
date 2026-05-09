@@ -1,17 +1,13 @@
-// ============================================================
 // Zod Validation Schemas — Auth Forms
-// PRD §2.2: react-hook-form + Zod manages all form state and
+// react-hook-form + Zod manages all form state and
 // client-side validation across every module.
 //
 // These schemas are consumed by react-hook-form via
 // @hookform/resolvers/zod in LoginPage and RegisterPage.
-// ============================================================
 
 import { z } from 'zod/v4';
 
-// ─────────────────────────────────────────────────────────────
 // Login Schema
-// ─────────────────────────────────────────────────────────────
 export const loginSchema = z.object({
   email: z
     .email('Please enter a valid email address'),
@@ -20,9 +16,7 @@ export const loginSchema = z.object({
     .min(1, 'Password is required'),
 });
 
-// ─────────────────────────────────────────────────────────────
 // Register Schema
-// ─────────────────────────────────────────────────────────────
 export const registerSchema = z
   .object({
     name: z
@@ -46,9 +40,7 @@ export const registerSchema = z
     path: ['confirmPassword'],
   });
 
-// ─────────────────────────────────────────────────────────────
 // Change Password Schema (used in ProfilePage)
-// ─────────────────────────────────────────────────────────────
 export const changePasswordSchema = z
   .object({
     currentPassword: z
@@ -69,9 +61,7 @@ export const changePasswordSchema = z
     path: ['confirmNewPassword'],
   });
 
-// ─────────────────────────────────────────────────────────────
 // Update Profile Schema (used in ProfilePage)
-// ─────────────────────────────────────────────────────────────
 export const updateProfileSchema = z.object({
   name: z
     .string()

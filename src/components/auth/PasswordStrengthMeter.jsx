@@ -1,8 +1,6 @@
-// ============================================================
 // PasswordStrengthMeter — Live feedback for password quality
 // Uses react-hook-form's useWatch to observe the password field
 // without re-rendering the parent form.
-// ============================================================
 
 import { useMemo } from 'react';
 

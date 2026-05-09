@@ -1,5 +1,4 @@
-// ============================================================
-// ProtectedRoute — PRD §Module 1
+// ProtectedRoute
 // React Router wrapper that guards authenticated routes.
 // Reads from Zustand auth store and redirects to /login if:
 //   1. User is not authenticated (401 scenario)
@@ -8,7 +7,6 @@
 // Uses React Router's <Outlet> pattern — all routes nested
 // inside <ProtectedRoute> are automatically guarded. Other
 // team members simply add their <Route> inside the block.
-// ============================================================
 
 import { Navigate, Outlet } from 'react-router-dom';
 import useAuthStore from '../../stores/authStore';

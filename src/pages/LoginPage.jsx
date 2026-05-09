@@ -1,9 +1,7 @@
-// ============================================================
-// LoginPage — PRD §Module 1 (Redesigned with iOS Glassmorphism)
+// LoginPage
 // Uses react-hook-form + Zod for validation.
 // Calls mockLogin via useMutation, syncs result to Zustand.
 // Phase 2: swap mockLogin with fetch('/api/auth/login', ...).
-// ============================================================
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';

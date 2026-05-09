@@ -2,7 +2,7 @@
  * Non-blocking warning banner displayed when cumulative required monthly
  * savings across all active goals exceed the user's disposable income.
  *
- * Per PRD: alerts the user to potential financial overextension without
+ * Alerts the user to potential financial overextension without
  * restricting their ability to save data.
  */
 function GoalWarningBanner({ totalRequiredMonthly, disposableIncome, onDismiss }) {

@@ -1,8 +1,6 @@
-// ============================================================
-// ProfilePage — PRD §Module 1: Profile Control (Redesigned)
+// ProfilePage
 // Glass-style cards with reusable form components.
 // Displays user info, change password, and account management.
-// ============================================================
 
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
@@ -35,7 +33,7 @@ export default function ProfilePage() {
   const [showNewPw, setShowNewPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
 
-  // ── Update Profile Form ──
+  // 
   const profileForm = useForm({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: { name: user?.name || '', email: user?.email || '' },
@@ -54,7 +52,7 @@ export default function ProfilePage() {
     },
   });
 
-  // ── Change Password Form ──
+  // 
   const passwordForm = useForm({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: { currentPassword: '', newPassword: '', confirmNewPassword: '' },
@@ -75,7 +73,7 @@ export default function ProfilePage() {
     },
   });
 
-  // ── Deactivate Account ──
+  // 
   const deactivateMutation = useMutation({
     mutationFn: mockDeactivateAccount,
     onSuccess: async () => {
@@ -85,7 +83,7 @@ export default function ProfilePage() {
     },
   });
 
-  // ── Delete Account ──
+  // 
   const deleteMutation = useMutation({
     mutationFn: mockDeleteAccount,
     onSuccess: () => {
@@ -108,7 +106,7 @@ export default function ProfilePage() {
         <p className="text-muted small mb-0">Manage your account information and security</p>
       </div>
 
-      {/* ── User Info Card ── */}
+      {/*  */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 0 }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center mb-3">
@@ -137,7 +135,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Update Profile ── */}
+      {/*  */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 1 }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-2 mb-3">
@@ -204,7 +202,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Change Password ── */}
+      {/*  */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 2 }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-2 mb-3">
@@ -303,7 +301,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* ── Danger Zone ── */}
+      {/*  */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 3, border: '1px solid rgba(239, 68, 68, 0.15)' }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-2 mb-3">

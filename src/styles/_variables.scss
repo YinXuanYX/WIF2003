@@ -1,17 +1,15 @@
-// ============================================================
-// Bootstrap Variable Overrides — PRD Section 3 Design Spec
+// Bootstrap Variable Overrides
 // These must be defined BEFORE importing Bootstrap's SCSS source.
 // Single source of truth for all theme variables.
-// ============================================================
 
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
 
-// ── Typography ──
+// 
 $font-family-sans-serif: "Inter", system-ui, -apple-system, "Segoe UI", Roboto,
   sans-serif;
 $font-family-base: $font-family-sans-serif;
 
-// ── Light Mode ("Executive Clarity") ──
+// 
 $body-bg: #f8fafc;
 $body-color: #0f172a;
 $card-bg: rgba(255, 255, 255, 0.72);  // Glass effect
@@ -24,7 +22,7 @@ $info: #06b6d4;
 
 $text-muted: #64748b;
 
-// ── Card & Border ──
+// 
 $card-border-radius: 1.25rem;
 $card-border-color: rgba(255, 255, 255, 0.25);
 $card-spacer-y: 1.25rem;
@@ -36,21 +34,21 @@ $border-radius: 0.75rem;
 $border-radius-lg: 1rem;
 $border-radius-sm: 0.5rem;
 
-// ── Shadows ──
+// 
 $box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
 $box-shadow-sm: 0 1px 6px rgba(0, 0, 0, 0.03);
 $box-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
 
-// ── Progress ──
+// 
 $progress-height: 8px;
 $progress-border-radius: 1rem;
 $progress-bg: rgba(0, 0, 0, 0.06);
 
-// ── Navbar ──
+// 
 $navbar-dark-color: rgba(255, 255, 255, 0.85);
 $navbar-dark-hover-color: #ffffff;
 
-// ── Dark Mode custom properties ──
+// 
 // Applied via [data-bs-theme="dark"] on <html> or <body>
 $dark-body-bg:    #0f172a;   // Deep Midnight Slate
 $dark-card-bg:    #1e293b;   // Elevated Slate

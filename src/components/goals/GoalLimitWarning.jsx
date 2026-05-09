@@ -1,6 +1,6 @@
 /**
  * Soft notification displayed when a user has more than 20 active goals.
- * Per PRD: maintains interface clarity and prevents cognitive overload.
+ * Maintains interface clarity and prevents cognitive overload.
  */
 function GoalLimitWarning({ goalCount, onDismiss }) {
   return (

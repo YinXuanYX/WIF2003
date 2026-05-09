@@ -1,9 +1,7 @@
-// ============================================================
 // AuthLayout — Shared split-panel wrapper for Login & Register
 // Left: Hero panel with mesh gradient + brand
 // Right: Frosted glass form card
 // Mobile: Hero collapses to compact header
-// ============================================================
 
 import PigIcon from '../../assets/PigIcon.png'
 

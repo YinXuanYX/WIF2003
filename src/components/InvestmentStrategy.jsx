@@ -513,7 +513,7 @@ export default function InvestmentStrategy() {
                 <ul className="strategy-tips-list mb-0">
                   <li className="mb-2">Each answer awards between <strong className="text-body">0-5 points</strong> based on your risk tolerance.</li>
                   <li className="mb-2">Your total score is calculated to map directly to a tailored risk profile.</li>
-                  <li>In Phase 2, asset allocation will be fully driven by backend AI analysis.</li>
+                  <li>In Phase 2, asset allocation will be fully driven by backend logic.</li>
                 </ul>
               </div>
             </div>

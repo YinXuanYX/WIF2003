@@ -21,7 +21,7 @@ function calculateCompoundInterest(
 function CalculatorPage() {
   const [calculationResult, setCalculationResult] = useState(null);
 
-  // Context-aware data as per PRD
+  // Context-aware data
   const { data: goals = [] } = useGoals();
   const { disposableIncome } = useCashFlow();
 

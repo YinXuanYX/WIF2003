@@ -1,9 +1,7 @@
-// ============================================================
-// RegisterPage — PRD §Module 1 (Redesigned with iOS Glassmorphism)
+// RegisterPage
 // Uses react-hook-form + Zod for validation.
 // Calls mockRegister via useMutation, auto-logs-in on success.
 // Phase 2: swap mockRegister with fetch('/api/auth/register', ...).
-// ============================================================
 
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';

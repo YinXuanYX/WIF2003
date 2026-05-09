@@ -1,8 +1,5 @@
-// ============================================================
-// Mock User Database — PRD §2.5 User Schema
-// Replicates the exact Mongoose document shape so that
-// components consuming this data need zero changes in Phase 2.
-// ============================================================
+// Mock User Database
+// Replicates the Mongoose document shape.
 
 export const mockUsers = [
   {
