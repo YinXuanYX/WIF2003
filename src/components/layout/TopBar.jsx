@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import useThemeStore from '../../stores/useThemeStore'
-import useAuthStore from '../../stores/useAuthStore'
+import useAuthStore from '../../stores/authStore'
 
 const PAGE_TITLES = {
   '/dashboard': 'Dashboard',

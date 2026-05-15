@@ -1,4 +1,4 @@
-import useAuthStore from '../stores/useAuthStore'
+import useAuthStore from '../stores/authStore'
 import CashFlowCard from '../components/dashboard/CashFlowCard'
 import GoalProgressCard from '../components/dashboard/GoalProgressCard'
 import RiskProfileCard from '../components/dashboard/RiskProfileCard'
