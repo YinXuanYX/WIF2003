@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import cashflowMock from '../mocks/cashflow.mock'
-import { simulateDelay } from '../utils/simulateDelay'
+import { cashflowApi } from '../utils/api'
 
 const QUERY_KEY = ['cashflow']
 
@@ -14,15 +13,13 @@ const QUERY_KEY = ['cashflow']
 export const useCashFlow = () => {
   const queryClient = useQueryClient()
 
-  // 
   const { data, isLoading, isError } = useQuery({
     queryKey: QUERY_KEY,
-    queryFn: () => simulateDelay(structuredClone(cashflowMock)),
+    queryFn: () => cashflowApi.get(),
     staleTime: 60 * 1000,
     gcTime: 5 * 60 * 1000,
   })
 
-  // 
   const totalExpenses = useMemo(
     () => (data?.expenses ?? []).reduce((sum, e) => sum + e.amount, 0),
     [data?.expenses],
@@ -36,11 +33,9 @@ export const useCashFlow = () => {
   const isEmptyState =
     !isLoading && data?.netIncome === 0 && (data?.expenses?.length ?? 0) === 0
 
-  // 
-
   /** Update the monthly net income */
   const updateIncomeMutation = useMutation({
-    mutationFn: (amount) => simulateDelay(amount, 300),
+    mutationFn: (amount) => cashflowApi.updateIncome(amount),
     onMutate: async (amount) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEY })
       const previous = queryClient.getQueryData(QUERY_KEY)
@@ -53,17 +48,20 @@ export const useCashFlow = () => {
     onError: (_err, _amount, context) => {
       queryClient.setQueryData(QUERY_KEY, context.previous)
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+    },
   })
 
   /** Add a new recurring expense */
   const addExpenseMutation = useMutation({
-    mutationFn: (expense) => simulateDelay(expense, 300),
+    mutationFn: (expense) => cashflowApi.addExpense(expense),
     onMutate: async (expense) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEY })
       const previous = queryClient.getQueryData(QUERY_KEY)
       const newExpense = {
         ...expense,
-        id: `exp-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+        id: 'optimistic',
       }
       queryClient.setQueryData(QUERY_KEY, (old) => ({
         ...old,
@@ -74,11 +72,14 @@ export const useCashFlow = () => {
     onError: (_err, _expense, context) => {
       queryClient.setQueryData(QUERY_KEY, context.previous)
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+    },
   })
 
   /** Remove an expense by ID */
   const removeExpenseMutation = useMutation({
-    mutationFn: (id) => simulateDelay(id, 200),
+    mutationFn: (id) => cashflowApi.removeExpense(id),
     onMutate: async (id) => {
       await queryClient.cancelQueries({ queryKey: QUERY_KEY })
       const previous = queryClient.getQueryData(QUERY_KEY)
@@ -91,20 +92,20 @@ export const useCashFlow = () => {
     onError: (_err, _id, context) => {
       queryClient.setQueryData(QUERY_KEY, context.previous)
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: QUERY_KEY })
+    },
   })
 
   return {
-    // Query
     data,
     isLoading,
     isError,
 
-    // Derived
     totalExpenses,
     disposableIncome,
     isEmptyState,
 
-    // Mutations
     updateIncome: updateIncomeMutation.mutate,
     isUpdatingIncome: updateIncomeMutation.isPending,
     addExpense: addExpenseMutation.mutate,

@@ -50,3 +50,13 @@ export const userApi = {
   deactivate: () => request('/users/me/deactivate', { method: 'PATCH' }),
   deleteAccount: () => request('/users/me', { method: 'DELETE' }),
 };
+
+export const cashflowApi = {
+  get: () => request('/cashflow'),
+  updateIncome: (netIncome) =>
+    request('/cashflow/income', { method: 'PUT', body: JSON.stringify({ netIncome }) }),
+  addExpense: (expense) =>
+    request('/cashflow/expenses', { method: 'POST', body: JSON.stringify(expense) }),
+  removeExpense: (expenseId) =>
+    request(`/cashflow/expenses/${expenseId}`, { method: 'DELETE' }),
+};
