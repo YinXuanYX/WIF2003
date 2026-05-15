@@ -1,7 +1,3 @@
-// ProfilePage
-// Glass-style cards with reusable form components.
-// Displays user info, change password, and account management.
-
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -9,13 +5,7 @@ import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '../stores/authStore';
 import { changePasswordSchema, updateProfileSchema } from '../validations/authSchemas';
-import {
-  mockUpdateProfile,
-  mockChangePassword,
-  mockDeactivateAccount,
-  mockDeleteAccount,
-  mockLogout,
-} from '../mocks/authHandlers';
+import { authApi, userApi } from '../utils/api';
 import PasswordStrengthMeter from '../components/auth/PasswordStrengthMeter';
 
 export default function ProfilePage() {
@@ -33,14 +23,13 @@ export default function ProfilePage() {
   const [showNewPw, setShowNewPw] = useState(false);
   const [showConfirmPw, setShowConfirmPw] = useState(false);
 
-  // 
   const profileForm = useForm({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: { name: user?.name || '', email: user?.email || '' },
   });
 
   const updateProfileMutation = useMutation({
-    mutationFn: mockUpdateProfile,
+    mutationFn: userApi.updateProfile,
     onSuccess: (data) => {
       setUser(data.user);
       setProfileMsg('Profile updated successfully');
@@ -52,7 +41,6 @@ export default function ProfilePage() {
     },
   });
 
-  // 
   const passwordForm = useForm({
     resolver: zodResolver(changePasswordSchema),
     defaultValues: { currentPassword: '', newPassword: '', confirmNewPassword: '' },
@@ -61,7 +49,7 @@ export default function ProfilePage() {
   const newPasswordValue = useWatch({ control: passwordForm.control, name: 'newPassword' });
 
   const changePasswordMutation = useMutation({
-    mutationFn: mockChangePassword,
+    mutationFn: userApi.changePassword,
     onSuccess: () => {
       setPasswordMsg('Password changed successfully');
       setPasswordError('');
@@ -73,19 +61,17 @@ export default function ProfilePage() {
     },
   });
 
-  // 
   const deactivateMutation = useMutation({
-    mutationFn: mockDeactivateAccount,
+    mutationFn: userApi.deactivate,
     onSuccess: async () => {
-      await mockLogout();
+      await authApi.logout();
       clearUser();
       navigate('/login');
     },
   });
 
-  // 
   const deleteMutation = useMutation({
-    mutationFn: mockDeleteAccount,
+    mutationFn: userApi.deleteAccount,
     onSuccess: () => {
       clearUser();
       navigate('/login');
@@ -106,7 +92,7 @@ export default function ProfilePage() {
         <p className="text-muted small mb-0">Manage your account information and security</p>
       </div>
 
-      {/*  */}
+      {/* User Info Card */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 0 }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center mb-3">
@@ -135,7 +121,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/*  */}
+      {/* Update Profile */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 1 }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-2 mb-3">
@@ -202,7 +188,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/*  */}
+      {/* Change Password */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 2 }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-2 mb-3">
@@ -301,7 +287,7 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/*  */}
+      {/* Danger Zone */}
       <div className="glass-card mb-4 animate-fade-in-up" style={{ '--animation-order': 3, border: '1px solid rgba(239, 68, 68, 0.15)' }}>
         <div className="card-body p-4">
           <div className="d-flex align-items-center gap-2 mb-3">

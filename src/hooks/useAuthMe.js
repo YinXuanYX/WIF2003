@@ -1,17 +1,6 @@
-// useAuthMe — Session Rehydration Hook
-// On app initialisation (via a top-level
-// useEffect), GET /api/auth/me validates the HttpOnly cookie
-// and repopulates the Zustand auth store.
-//
-// This hook is called ONCE at app startup by AuthInitializer.
-// It bridges TanStack Query (server state) → Zustand (UI state).
-//
-// Phase 2 migration: swap mockGetMe with:
-//   fetch('/api/auth/me', { credentials: 'include' })
-
 import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { mockGetMe } from '../mocks/authHandlers';
+import { authApi } from '../utils/api';
 import useAuthStore from '../stores/authStore';
 
 export default function useAuthMe() {
@@ -20,10 +9,10 @@ export default function useAuthMe() {
 
   const query = useQuery({
     queryKey: ['auth', 'me'],
-    queryFn: mockGetMe, // Phase 2: replace with real fetch
-    retry: false,       // Don't retry on 401 — it means no session
-    staleTime: 60 * 1000,    // user data = 1 min stale
-    gcTime: 5 * 60 * 1000,   // user data = 5 min gc
+    queryFn: authApi.getMe,
+    retry: false,
+    staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
   });
 
   useEffect(() => {

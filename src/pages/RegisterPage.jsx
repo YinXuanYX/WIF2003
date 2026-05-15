@@ -1,15 +1,10 @@
-// RegisterPage
-// Uses react-hook-form + Zod for validation.
-// Calls mockRegister via useMutation, auto-logs-in on success.
-// Phase 2: swap mockRegister with fetch('/api/auth/register', ...).
-
 import { useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { registerSchema } from '../validations/authSchemas';
-import { mockRegister } from '../mocks/authHandlers';
+import { authApi } from '../utils/api';
 import useAuthStore from '../stores/authStore';
 import AuthLayout from '../components/auth/AuthLayout';
 import PasswordStrengthMeter from '../components/auth/PasswordStrengthMeter';
@@ -36,7 +31,7 @@ export default function RegisterPage() {
   const passwordValue = useWatch({ control, name: 'password' });
 
   const registerMutation = useMutation({
-    mutationFn: mockRegister,
+    mutationFn: authApi.register,
     onSuccess: (data) => {
       setUser(data.user);
       queryClient.setQueryData(['auth', 'me'], data);

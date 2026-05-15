@@ -1,15 +1,10 @@
-// LoginPage
-// Uses react-hook-form + Zod for validation.
-// Calls mockLogin via useMutation, syncs result to Zustand.
-// Phase 2: swap mockLogin with fetch('/api/auth/login', ...).
-
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginSchema } from '../validations/authSchemas';
-import { mockLogin } from '../mocks/authHandlers';
+import { authApi } from '../utils/api';
 import useAuthStore from '../stores/authStore';
 import AuthLayout from '../components/auth/AuthLayout';
 
@@ -30,7 +25,7 @@ export default function LoginPage() {
   });
 
   const loginMutation = useMutation({
-    mutationFn: mockLogin,
+    mutationFn: authApi.login,
     onSuccess: (data) => {
       setUser(data.user);
       queryClient.setQueryData(['auth', 'me'], data);

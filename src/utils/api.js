@@ -1,0 +1,52 @@
+const API_BASE = '/api';
+
+async function request(endpoint, options = {}) {
+  const res = await fetch(`${API_BASE}${endpoint}`, {
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+    ...options,
+  });
+
+  if (res.status === 204) return;
+
+  const contentType = res.headers.get('content-type');
+  let data;
+
+  if (contentType && contentType.includes('application/json')) {
+    try {
+      data = await res.json();
+    } catch (err) {
+      if (!res.ok) {
+        throw new Error(`Server error (${res.status}): The response could not be parsed.`);
+      }
+      throw new Error('Failed to parse server response as JSON.');
+    }
+  } else {
+    const text = await res.text();
+    if (!res.ok) {
+      throw new Error(text || `Request failed with status ${res.status}`);
+    }
+    return text;
+  }
+
+  if (!res.ok) {
+    throw new Error(data?.message || `Request failed with status ${res.status}`);
+  }
+
+  return data;
+}
+
+export const authApi = {
+  register: (body) => request('/auth/register', { method: 'POST', body: JSON.stringify(body) }),
+  login: (body) => request('/auth/login', { method: 'POST', body: JSON.stringify(body) }),
+  logout: () => request('/auth/logout', { method: 'POST' }),
+  getMe: () => request('/auth/me'),
+};
+
+export const userApi = {
+  getProfile: () => request('/users/me'),
+  updateProfile: (body) => request('/users/me', { method: 'PUT', body: JSON.stringify(body) }),
+  changePassword: (body) => request('/users/me/password', { method: 'PUT', body: JSON.stringify(body) }),
+  deactivate: () => request('/users/me/deactivate', { method: 'PATCH' }),
+  deleteAccount: () => request('/users/me', { method: 'DELETE' }),
+};

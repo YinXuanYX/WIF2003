@@ -2,7 +2,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import PigIcon from '../../assets/PigIcon.png'
 import useThemeStore from '../../stores/useThemeStore'
 import useAuthStore from '../../stores/authStore'
-import { mockLogout } from '../../mocks/authHandlers'
+import { authApi } from '../../utils/api'
 
 const NAV_GROUPS = [
   {
@@ -36,7 +36,7 @@ function Sidebar({ isOpen, onClose, collapsed, onToggleCollapse }) {
   const navigate = useNavigate()
 
   const handleLogout = async () => {
-    await mockLogout()
+    await authApi.logout()
     clearUser()
     navigate('/login')
   }
