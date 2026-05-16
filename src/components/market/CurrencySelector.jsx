@@ -1,18 +1,11 @@
 import SegmentedControl from '../ui/SegmentedControl'
-
-const CURRENCIES = [
-  { label: 'USD', value: 'usd' },
-  { label: 'EUR', value: 'eur' },
-  { label: 'GBP', value: 'gbp' },
-  { label: 'JPY', value: 'jpy' },
-  { label: 'MYR', value: 'myr' },
-]
+import { CURRENCY_LIST } from '../../utils/currencies'
 
 function CurrencySelector({ value = 'usd', onChange }) {
   return (
-    <div style={{ maxWidth: 320 }}>
+    <div style={{ maxWidth: 420 }}>
       <SegmentedControl
-        options={CURRENCIES}
+        options={CURRENCY_LIST}
         value={value}
         onChange={onChange}
       />

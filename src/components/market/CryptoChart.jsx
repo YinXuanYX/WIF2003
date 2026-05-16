@@ -13,6 +13,7 @@ import { Line } from 'react-chartjs-2'
 import { useMarketChart } from '../../hooks/useMarketChart'
 import SegmentedControl from '../ui/SegmentedControl'
 import useThemeStore from '../../stores/useThemeStore'
+import { CURRENCY_SYMBOLS, CURRENCY_LABELS } from '../../utils/currencies'
 
 ChartJS.register(
   CategoryScale,
@@ -28,22 +29,6 @@ const TIMEFRAMES = [
   { label: '7d', value: '7d' },
   { label: '30d', value: '30d' },
 ]
-
-const CURRENCY_SYMBOLS = {
-  usd: '$',
-  eur: '\u20ac',
-  gbp: '\u00a3',
-  jpy: '\u00a5',
-  myr: 'RM',
-}
-
-const CURRENCY_LABELS = {
-  usd: 'USD',
-  eur: 'EUR',
-  gbp: 'GBP',
-  jpy: 'JPY',
-  myr: 'MYR',
-}
 
 const getCssVar = (name, fallback) => {
   const value = getComputedStyle(document.documentElement)

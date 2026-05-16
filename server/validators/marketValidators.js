@@ -27,8 +27,8 @@ export const validateCryptoChart = [
 
   query('currency')
     .optional()
-    .isIn(['usd', 'eur', 'gbp', 'jpy', 'myr'])
-    .withMessage('Currency must be one of: usd, eur, gbp, jpy, myr'),
+    .isIn(['usd', 'eur', 'gbp', 'jpy', 'myr', 'sgd'])
+    .withMessage('Currency must be one of: usd, eur, gbp, jpy, myr, sgd'),
 
   validate,
 ];

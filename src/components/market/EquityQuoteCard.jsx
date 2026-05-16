@@ -1,21 +1,6 @@
 import { useMemo } from 'react'
 import { useEquityQuote } from '../../hooks/useEquityQuote'
-
-const CURRENCY_SYMBOLS = {
-  usd: '$',
-  eur: '\u20ac',
-  gbp: '\u00a3',
-  jpy: '\u00a5',
-  myr: 'RM',
-}
-
-const CURRENCY_LABELS = {
-  usd: 'USD',
-  eur: 'EUR',
-  gbp: 'GBP',
-  jpy: 'JPY',
-  myr: 'MYR',
-}
+import { CURRENCY_SYMBOLS, CURRENCY_LABELS } from '../../utils/currencies'
 
 function EquityQuoteCard({ symbol, name, animationOrder = 0, currency = 'usd', rate = null }) {
   const { data, isLoading, isError, error } = useEquityQuote(symbol)

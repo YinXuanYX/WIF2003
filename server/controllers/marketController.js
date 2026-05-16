@@ -1,6 +1,6 @@
 const COINGECKO_BASE = 'https://api.coingecko.com/api/v3';
 const FINNHUB_BASE = 'https://finnhub.io/api/v1';
-const ALLOWED_CURRENCIES = ['usd', 'eur', 'gbp', 'jpy', 'myr'];
+const ALLOWED_CURRENCIES = ['usd', 'eur', 'gbp', 'jpy', 'myr', 'sgd'];
 
 export const getCryptoChart = async (req, res, next) => {
   try {
