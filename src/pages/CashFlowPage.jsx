@@ -23,7 +23,7 @@ function CashFlowPage() {
   const incomeRef = useRef(null)
 
   const handleGetStarted = () => {
-    updateIncome(0.01)
+    updateIncome(0)
     setTimeout(() => {
       incomeRef.current?.scrollIntoView({ behavior: 'smooth' })
     }, 100)

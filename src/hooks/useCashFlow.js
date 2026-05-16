@@ -31,7 +31,7 @@ export const useCashFlow = () => {
   )
 
   const isEmptyState =
-    !isLoading && data?.netIncome === 0 && (data?.expenses?.length ?? 0) === 0
+    !isLoading && (data?.isNewUser ?? true)
 
   /** Update the monthly net income */
   const updateIncomeMutation = useMutation({
@@ -42,6 +42,7 @@ export const useCashFlow = () => {
       queryClient.setQueryData(QUERY_KEY, (old) => ({
         ...old,
         netIncome: amount,
+        isNewUser: false,
       }))
       return { previous }
     },

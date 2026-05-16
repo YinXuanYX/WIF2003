@@ -14,7 +14,7 @@ const handleValidationErrors = (req, res) => {
 
 const buildCashFlowResponse = (cashFlowDoc) => {
   if (!cashFlowDoc) {
-    return { netIncome: 0, expenses: [], disposableIncome: 0 };
+    return { netIncome: 0, expenses: [], disposableIncome: 0, isNewUser: true };
   }
 
   const obj = cashFlowDoc.toObject();
@@ -28,6 +28,7 @@ const buildCashFlowResponse = (cashFlowDoc) => {
       amount: e.amount,
     })),
     disposableIncome: obj.netIncome - totalExpenses,
+    isNewUser: false,
   };
 };
 
