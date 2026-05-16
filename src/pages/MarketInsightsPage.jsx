@@ -3,6 +3,7 @@ import CryptoChart from '../components/market/CryptoChart'
 import EquityQuoteCard from '../components/market/EquityQuoteCard'
 import MarketNewsCard from '../components/market/MarketNewsCard'
 import CurrencySelector from '../components/market/CurrencySelector'
+import CurrencyConverterCard from '../components/market/CurrencyConverterCard'
 import { useForexRates } from '../hooks/useForexRates'
 
 function MarketInsightsPage() {
@@ -49,7 +50,14 @@ function MarketInsightsPage() {
         </div>
 
         <div className="col-12">
-          <MarketNewsCard category="general" animationOrder={4} />
+          <div className="row g-4">
+            <div className="col-lg-8">
+              <MarketNewsCard category="general" animationOrder={4} />
+            </div>
+            <div className="col-lg-4">
+              <CurrencyConverterCard rates={rates} animationOrder={5} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
