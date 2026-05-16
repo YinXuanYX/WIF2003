@@ -30,7 +30,9 @@ async function request(endpoint, options = {}) {
   }
 
   if (!res.ok) {
-    throw new Error(data?.message || `Request failed with status ${res.status}`);
+    const error = new Error(data?.message || `Request failed with status ${res.status}`);
+    error.status = res.status;
+    throw error;
   }
 
   return data;
@@ -59,4 +61,13 @@ export const cashflowApi = {
     request('/cashflow/expenses', { method: 'POST', body: JSON.stringify(expense) }),
   removeExpense: (expenseId) =>
     request(`/cashflow/expenses/${expenseId}`, { method: 'DELETE' }),
+};
+
+export const marketApi = {
+  getCryptoChart: (coinId, days) =>
+    request(`/market/crypto/${coinId}/chart?days=${days}`),
+  getEquityQuote: (symbol) =>
+    request(`/market/equity/${symbol}/quote`),
+  getMarketNews: (category = 'general') =>
+    request(`/market/news?category=${category}`),
 };
