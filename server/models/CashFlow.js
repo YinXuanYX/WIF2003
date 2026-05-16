@@ -12,11 +12,22 @@ const cashFlowSchema = new mongoose.Schema(
       type: Number,
       required: true,
       default: 0,
+      min: [0, 'Net income cannot be negative'],
+      max: [1000000, 'Net income cannot exceed 1,000,000'],
     },
     expenses: [
       {
-        label: { type: String, required: true },
-        amount: { type: Number, required: true },
+        label: {
+          type: String,
+          required: true,
+          trim: true,
+          maxlength: [50, 'Expense label must be under 50 characters'],
+        },
+        amount: {
+          type: Number,
+          required: true,
+          min: [0, 'Expense amount cannot be negative'],
+        },
       },
     ],
   },
