@@ -1,12 +1,13 @@
 import CryptoChart from '../components/market/CryptoChart'
 import EquityQuoteCard from '../components/market/EquityQuoteCard'
+import MarketNewsCard from '../components/market/MarketNewsCard'
 
 function MarketInsightsPage() {
   return (
     <div className="market-insights-page">
       <div className="dashboard-greeting mb-4 animate-fade-in-up">
         <h1>Market Insights</h1>
-        <p>Track crypto momentum and key equity quotes in one place.</p>
+        <p>Track crypto momentum, key equity quotes, and the latest market news.</p>
       </div>
 
       <div className="row g-4">
@@ -31,6 +32,10 @@ function MarketInsightsPage() {
               />
             </div>
           </div>
+        </div>
+
+        <div className="col-12">
+          <MarketNewsCard category="general" animationOrder={4} />
         </div>
       </div>
     </div>
