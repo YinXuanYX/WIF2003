@@ -64,10 +64,12 @@ export const cashflowApi = {
 };
 
 export const marketApi = {
-  getCryptoChart: (coinId, days) =>
-    request(`/market/crypto/${coinId}/chart?days=${days}`),
+  getCryptoChart: (coinId, days, currency = 'usd') =>
+    request(`/market/crypto/${coinId}/chart?days=${days}&currency=${currency}`),
   getEquityQuote: (symbol) =>
     request(`/market/equity/${symbol}/quote`),
+  getForexRates: () =>
+    request('/market/forex/rates'),
   getMarketNews: (category = 'general') =>
     request(`/market/news?category=${category}`),
 };

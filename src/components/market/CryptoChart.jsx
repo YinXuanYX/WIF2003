@@ -29,6 +29,22 @@ const TIMEFRAMES = [
   { label: '30d', value: '30d' },
 ]
 
+const CURRENCY_SYMBOLS = {
+  usd: '$',
+  eur: '\u20ac',
+  gbp: '\u00a3',
+  jpy: '\u00a5',
+  myr: 'RM',
+}
+
+const CURRENCY_LABELS = {
+  usd: 'USD',
+  eur: 'EUR',
+  gbp: 'GBP',
+  jpy: 'JPY',
+  myr: 'MYR',
+}
+
 const getCssVar = (name, fallback) => {
   const value = getComputedStyle(document.documentElement)
     .getPropertyValue(name)
@@ -61,11 +77,14 @@ const toRgba = (color, alpha) => {
   return color
 }
 
-function CryptoChart({ coinId = 'bitcoin' }) {
+function CryptoChart({ coinId = 'bitcoin', currency = 'usd' }) {
   const [timeframe, setTimeframe] = useState('30d')
-  const { data, isLoading, isError } = useMarketChart(coinId, timeframe)
+  const { data, isLoading, isError } = useMarketChart(coinId, timeframe, currency)
   const theme = useThemeStore((state) => state.theme)
   const chartRef = useRef(null)
+
+  const sym = CURRENCY_SYMBOLS[currency] || '$'
+  const currencyLabel = CURRENCY_LABELS[currency] || 'USD'
 
   useEffect(() => {
     return () => {
@@ -79,6 +98,12 @@ function CryptoChart({ coinId = 'bitcoin' }) {
   const priceChange = currentPrice - prevPrice
   const changePercent = prevPrice ? (priceChange / prevPrice) * 100 : 0
   const isPositive = priceChange >= 0
+
+  const formatPrice = (val) => {
+    if (!val) return '\u2014'
+    const prefix = sym === 'RM' ? 'RM ' : sym
+    return `${prefix}${val.toLocaleString()}`
+  }
 
   const chartData = useMemo(() => {
     if (!prices.length) return null
@@ -96,7 +121,7 @@ function CryptoChart({ coinId = 'bitcoin' }) {
       labels,
       datasets: [
         {
-          label: 'BTC Price (USD)',
+          label: `BTC Price (${currencyLabel})`,
           data: prices.map(([, p]) => p),
           borderColor: lineColor,
           backgroundColor: toRgba(lineColor, 0.12),
@@ -109,13 +134,15 @@ function CryptoChart({ coinId = 'bitcoin' }) {
         },
       ],
     }
-  }, [prices, isPositive, theme])
+  }, [prices, isPositive, theme, currencyLabel])
 
   const options = useMemo(() => {
     const isDark = theme === 'dark'
     const textColor = getCssVar('--bs-body-color', isDark ? '#f8fafc' : '#0f172a')
     const mutedColor = getCssVar('--bs-secondary-color', '#64748b')
     const gridColor = isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.05)'
+
+    const prefix = sym === 'RM' ? 'RM ' : sym
 
     return {
       responsive: true,
@@ -136,7 +163,7 @@ function CryptoChart({ coinId = 'bitcoin' }) {
           cornerRadius: 12,
           displayColors: false,
           callbacks: {
-            label: (ctx) => `$${ctx.parsed.y.toLocaleString()}`,
+            label: (ctx) => `${prefix}${ctx.parsed.y.toLocaleString()}`,
           },
         },
       },
@@ -156,7 +183,7 @@ function CryptoChart({ coinId = 'bitcoin' }) {
           ticks: {
             color: mutedColor,
             font: { size: 11, family: 'Inter' },
-            callback: (v) => `$${(v / 1000).toFixed(0)}k`,
+            callback: (v) => `${prefix}${(v / 1000).toFixed(0)}k`,
           },
         },
       },
@@ -165,7 +192,7 @@ function CryptoChart({ coinId = 'bitcoin' }) {
         mode: 'index',
       },
     }
-  }, [theme])
+  }, [theme, sym])
 
   return (
     <div className="glass-card h-100 animate-fade-in-up" style={{ '--animation-order': 1 }}>
@@ -175,19 +202,19 @@ function CryptoChart({ coinId = 'bitcoin' }) {
             <h6 className="stat-label mb-1">Crypto Market Trends</h6>
             <div className="d-flex align-items-center gap-2">
               <span className="fw-semibold">Bitcoin (BTC)</span>
-              <span className="badge text-bg-primary-subtle">USD</span>
+              <span className="badge text-bg-primary-subtle">{currencyLabel}</span>
             </div>
           </div>
 
           <div className="text-lg-end">
             <div className="stat-value-sm">
-              ${currentPrice ? currentPrice.toLocaleString() : '—'}
+              {formatPrice(currentPrice)}
             </div>
             <span
               className={`fw-semibold ${isPositive ? 'text-success' : 'text-danger'}`}
               style={{ fontSize: '0.8rem' }}
             >
-              {isPositive ? '▲' : '▼'} {Math.abs(priceChange).toFixed(2)} ({changePercent.toFixed(2)}%)
+              {isPositive ? '\u25b2' : '\u25bc'} {Math.abs(priceChange).toFixed(2)} ({changePercent.toFixed(2)}%)
             </span>
           </div>
         </div>
@@ -209,7 +236,7 @@ function CryptoChart({ coinId = 'bitcoin' }) {
 
         {isError && !isLoading && (
           <div className="d-flex flex-column align-items-center justify-content-center text-center" style={{ minHeight: 280 }}>
-            <div className="fs-2 mb-2">⚠️</div>
+            <div className="fs-2 mb-2">{'\u26a0\ufe0f'}</div>
             <h6 className="fw-semibold mb-2">Market data unavailable</h6>
             <p className="text-muted small mb-0">Please try again in a moment.</p>
           </div>

@@ -25,6 +25,11 @@ export const validateCryptoChart = [
     .isIn(['1', '7', '14', '30', '90', '365'])
     .withMessage('Days must be one of: 1, 7, 14, 30, 90, 365'),
 
+  query('currency')
+    .optional()
+    .isIn(['usd', 'eur', 'gbp', 'jpy', 'myr'])
+    .withMessage('Currency must be one of: usd, eur, gbp, jpy, myr'),
+
   validate,
 ];
 
