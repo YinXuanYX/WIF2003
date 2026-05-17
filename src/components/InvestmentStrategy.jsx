@@ -119,6 +119,7 @@ export default function InvestmentStrategy() {
   const {
     data: riskProfile,
     isLoading,
+    error,
     submitAssessment,
     resetProfile,
   } = useInvestmentProfile();
@@ -170,7 +171,7 @@ export default function InvestmentStrategy() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isStepAnswered || isLoading) return;
 
     if (currentStep < QUESTIONS.length - 1) {
@@ -178,7 +179,7 @@ export default function InvestmentStrategy() {
       return;
     }
     if (!isComplete) return;
-    submitAssessment(answers);
+    await submitAssessment(answers);
     setShowCongrats(true);
     setCelebrate(true);
   };
@@ -307,6 +308,12 @@ export default function InvestmentStrategy() {
                       aria-valuemax="100"
                     />
                   </div>
+
+                  {error && (
+                    <div className="alert alert-danger py-2 mb-3" role="alert">
+                      {error.message || "Failed to save assessment. Please try again."}
+                    </div>
+                  )}
 
                   <div className="strategy-wizard-actions">
                     <button

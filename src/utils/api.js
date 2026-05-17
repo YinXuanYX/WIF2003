@@ -73,3 +73,8 @@ export const marketApi = {
   getMarketNews: (category = 'general') =>
     request(`/market/news?category=${category}`),
 };
+
+export const investmentApi = {
+  submitProfile: (body) =>
+    request('/investment/profile', { method: 'POST', body: JSON.stringify(body) }),
+};
