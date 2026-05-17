@@ -9,6 +9,7 @@ import {
 } from "recharts";
 import GlassCard from "../ui/GlassCard";
 
+// show total investment value and total profit at a specific year
 const CustomTooltip = ({ active, payload, label, principal }) => {
   if (active && payload && payload.length) {
     return (
@@ -57,6 +58,7 @@ function ROIResults({
   roiPercent,
   animationOrder = 1,
 }) {
+  // before calculate show placeholder
   if (!hasCalculated || !inputs) {
     return (
       <GlassCard
@@ -82,7 +84,7 @@ function ROIResults({
 
   const isProfit = netProfit >= 0;
 
-  // Generate Year-over-Year projection data
+  // generate year-over-year projection data 
   const generateProjectionData = () => {
     const data = [];
     const { principal, rate, years, compounding } = inputs;
@@ -111,6 +113,7 @@ function ROIResults({
       </h6>
 
       <div className="row g-3 mb-4">
+        {/* show future value */}
         <div className="col-sm-6">
           <div
             className="p-3 rounded-4"
@@ -126,6 +129,8 @@ function ROIResults({
             </div>
           </div>
         </div>
+
+        {/* show net profit */}
         <div className="col-sm-6">
           <div
             className={`p-3 rounded-4 ${isProfit ? "bg-success bg-opacity-10" : "bg-danger bg-opacity-10"}`}
@@ -144,6 +149,8 @@ function ROIResults({
             </div>
           </div>
         </div>
+
+        {/* show total ROI */}
         <div className="col-12">
           <div
             className={`p-3 rounded-4 text-center ${isProfit ? "bg-success bg-opacity-10" : "bg-danger bg-opacity-10"}`}
@@ -163,6 +170,7 @@ function ROIResults({
         </div>
       </div>
 
+      {/* show projection chart */}
       <div className="flex-grow-1 mt-4" style={{ minHeight: "260px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart

@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import ROIForm from "../components/calculator/ROIForm";
 import ROIResults from "../components/calculator/ROIResults";
 import InvestmentComparison from "../components/calculator/InvestmentComparison";
-import { useGoals } from "../hooks/useGoals";
+import useGoalsStore from "../stores/useGoalsStore";
 import { useCashFlow } from "../hooks/useCashFlow";
 
 function calculateCompoundInterest(
@@ -21,10 +21,13 @@ function calculateCompoundInterest(
 function CalculatorPage() {
   const [calculationResult, setCalculationResult] = useState(null);
 
-  // Context-aware data
-  const { data: goals = [] } = useGoals();
+  // get all financial goals from global store (Zustand)
+  const goals = useGoalsStore((s) => s.goals);
+
+  // get user's disposable income from cashflow hook
   const { disposableIncome } = useCashFlow();
 
+  // calculate ROI when form data changes
   const handleCalculate = useCallback((data) => {
     const { principal, rate, years, compounding } = data;
 
@@ -35,6 +38,7 @@ function CalculatorPage() {
       compounding,
     );
     const netProfit = futureValue - principal;
+    // calculate ROI percentage, ensure principal is not zero to avoid division by zero
     const roiPercent = principal > 0 ? (netProfit / principal) * 100 : 0;
 
     setCalculationResult({
