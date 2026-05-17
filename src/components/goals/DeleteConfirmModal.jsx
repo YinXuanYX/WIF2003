@@ -26,7 +26,7 @@ function DeleteConfirmModal({ show, onClose, onConfirm, goal }) {
   }, [show, onClose])
 
   const handleConfirm = () => {
-    onConfirm(goal._id)
+    onConfirm(goal.id)
     onClose()
   }
 

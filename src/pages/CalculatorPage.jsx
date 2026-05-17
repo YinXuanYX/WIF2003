@@ -2,7 +2,6 @@ import { useState, useCallback } from "react";
 import ROIForm from "../components/calculator/ROIForm";
 import ROIResults from "../components/calculator/ROIResults";
 import InvestmentComparison from "../components/calculator/InvestmentComparison";
-import { useGoals } from "../hooks/useGoals";
 import { useCashFlow } from "../hooks/useCashFlow";
 
 function calculateCompoundInterest(
@@ -22,7 +21,6 @@ function CalculatorPage() {
   const [calculationResult, setCalculationResult] = useState(null);
 
   // Context-aware data
-  const { data: goals = [] } = useGoals();
   const { disposableIncome } = useCashFlow();
 
   const handleCalculate = useCallback((data) => {
@@ -61,7 +59,6 @@ function CalculatorPage() {
         {/* Input Form */}
         <div className="col-lg-4">
           <ROIForm
-            goals={goals}
             disposableIncome={disposableIncome}
             defaultValues={{
               principal: 10000,

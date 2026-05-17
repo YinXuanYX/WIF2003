@@ -8,11 +8,11 @@ function getProgressColor(percent) {
 }
 
 function GoalProgressCard({ animationOrder = 1 }) {
-  const { data, isLoading } = useGoals()
+  const { goals, isLoading } = useGoals()
 
   if (isLoading) return <SkeletonCard lines={5} />
 
-  const topGoals = data.slice(0, 3)
+  const topGoals = goals.slice(0, 3)
 
   return (
     <div
@@ -23,11 +23,11 @@ function GoalProgressCard({ animationOrder = 1 }) {
         <h6 className="stat-label mb-3">Goal Progress</h6>
 
         {topGoals.map((goal) => {
-          const percent = Math.round((goal.savedAmount / goal.targetAmount) * 100)
+          const percent = goal.progressPercent ?? Math.min(Math.round((goal.savedAmount / goal.targetAmount) * 100), 100)
           const colorClass = getProgressColor(percent)
 
           return (
-            <div key={goal._id} className="mb-3">
+            <div key={goal.id} className="mb-3">
               <div className="d-flex justify-content-between align-items-baseline mb-1">
                 <span className="fw-semibold small">{goal.title}</span>
                 <span className="text-muted" style={{ fontSize: '0.75rem' }}>

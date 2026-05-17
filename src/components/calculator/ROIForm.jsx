@@ -8,7 +8,6 @@ import SliderInput from "../ui/SliderInput";
 function ROIForm({
   defaultValues,
   onChange,
-  goals = [],
   disposableIncome = 0,
 }) {
   const {
@@ -38,11 +37,6 @@ function ROIForm({
     });
   });
 
-  const handleFillGoal = (goal) => {
-    const amountNeeded = Math.max(0, goal.targetAmount - goal.savedAmount);
-    setValue("principal", amountNeeded, { shouldValidate: true });
-  };
-
   return (
     <GlassCard className="h-100" animationOrder={0}>
       <div className="d-flex justify-content-between align-items-center mb-4">
@@ -62,45 +56,6 @@ function ROIForm({
 
       <div className="flex-grow-1 d-flex flex-column gap-4">
         <div>
-          <div className="d-flex justify-content-end mb-1">
-            {goals.length > 0 && (
-              <div className="dropdown">
-                <button
-                  className="btn btn-sm btn-link text-decoration-none py-0 px-1 dropdown-toggle"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  style={{ fontSize: "0.75rem" }}
-                >
-                  Auto-fill from Goal
-                </button>
-                <ul
-                  className="dropdown-menu dropdown-menu-end shadow-sm"
-                  style={{ fontSize: "0.85rem" }}
-                >
-                  {goals.map((goal) => {
-                    const needed = Math.max(
-                      0,
-                      goal.targetAmount - goal.savedAmount,
-                    );
-                    return (
-                      <li key={goal._id}>
-                        <button
-                          type="button"
-                          className="dropdown-item d-flex justify-content-between"
-                          onClick={() => handleFillGoal(goal)}
-                        >
-                          <span>{goal.title}</span>
-                          <span className="text-muted ms-3">
-                            RM {needed.toLocaleString()}
-                          </span>
-                        </button>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-          </div>
           <SliderInput
             label="Principal (RM)"
             value={principal}
