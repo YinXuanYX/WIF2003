@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import ROIForm from "../components/calculator/ROIForm";
 import ROIResults from "../components/calculator/ROIResults";
 import InvestmentComparison from "../components/calculator/InvestmentComparison";
-import useGoalsStore from "../stores/useGoalsStore";
+import { useGoals } from "../hooks/useGoals";
 import { useCashFlow } from "../hooks/useCashFlow";
 
 function calculateCompoundInterest(
@@ -21,8 +21,7 @@ function calculateCompoundInterest(
 function CalculatorPage() {
   const [calculationResult, setCalculationResult] = useState(null);
 
-  const goals = useGoalsStore((s) => s.goals);
-
+  const { goals } = useGoals();
   const { disposableIncome } = useCashFlow();
 
   const handleCalculate = useCallback((data) => {
