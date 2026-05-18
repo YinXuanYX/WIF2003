@@ -15,7 +15,7 @@ function calculateCompoundInterest(principal, ratePercent, years, compoundingFre
   return principal * Math.pow(1 + r / n, n * t)
 }
 
-function InvestmentComparison({ hasCalculated, principal, years, compounding, animationOrder = 2 }) {
+function InvestmentComparison({ principal, years, compounding, animationOrder = 2 }) {
   const [rates, setRates] = useState({
     fd: DEFAULT_VEHICLES[0].defaultRate,
     ut: DEFAULT_VEHICLES[1].defaultRate,
