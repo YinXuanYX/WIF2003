@@ -30,15 +30,6 @@ function TopBar({ onToggleSidebar }) {
         </button>
         <div>
           <h1 className="topbar-title">{title}</h1>
-          <nav className="topbar-breadcrumb" aria-label="Breadcrumb">
-            <span>Home</span>
-            {location.pathname !== '/dashboard' && (
-              <>
-                <span className="topbar-breadcrumb__sep">/</span>
-                <span className="topbar-breadcrumb__current">{title}</span>
-              </>
-            )}
-          </nav>
         </div>
       </div>
 

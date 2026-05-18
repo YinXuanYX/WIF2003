@@ -30,7 +30,9 @@ async function request(endpoint, options = {}) {
   }
 
   if (!res.ok) {
-    throw new Error(data?.message || `Request failed with status ${res.status}`);
+    const error = new Error(data?.message || `Request failed with status ${res.status}`);
+    error.status = res.status;
+    throw error;
   }
 
   return data;
@@ -60,3 +62,28 @@ export const cashflowApi = {
   removeExpense: (expenseId) =>
     request(`/cashflow/expenses/${expenseId}`, { method: 'DELETE' }),
 };
+
+export const marketApi = {
+  getCryptoChart: (coinId, days, currency = 'usd') =>
+    request(`/market/crypto/${coinId}/chart?days=${days}&currency=${currency}`),
+  getEquityQuote: (symbol) =>
+    request(`/market/equity/${symbol}/quote`),
+  getForexRates: () =>
+    request('/market/forex/rates'),
+  getMarketNews: (category = 'general') =>
+    request(`/market/news?category=${category}`),
+};
+
+export const goalsApi = {
+  getAll: () => request('/goals'),
+  getOne: (id) => request(`/goals/${id}`),
+  create: (body) =>
+    request('/goals', { method: 'POST', body: JSON.stringify(body) }),
+  update: (id, body) =>
+    request(`/goals/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  quickSave: (id, savedAmount) =>
+    request(`/goals/${id}/save`, { method: 'PATCH', body: JSON.stringify({ savedAmount }) }),
+  remove: (id) =>
+    request(`/goals/${id}`, { method: 'DELETE' }),
+};
+

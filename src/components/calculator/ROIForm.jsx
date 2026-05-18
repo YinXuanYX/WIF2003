@@ -1,3 +1,4 @@
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { calculatorSchema } from "../../schemas/calculator.schema";
@@ -11,6 +12,24 @@ function ROIForm({
   goals = [],
   disposableIncome = 0,
 }) {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+
+    if (showDropdown) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [showDropdown]);
+
   const {
     watch,
     setValue,
@@ -22,13 +41,11 @@ function ROIForm({
     mode: "onChange",
   });
 
-  // Watch individual fields for display
   const principal = watch("principal");
   const rate = watch("rate");
   const years = watch("years");
   const compounding = watch("compounding");
 
-  // Handle form submission - only calculate when button is clicked
   const onCalculate = handleSubmit((formData) => {
     onChange({
       principal: Number(formData.principal),
@@ -50,6 +67,7 @@ function ROIForm({
           <i className="bi bi-sliders me-1" />
           Investment Details
         </h6>
+
         {disposableIncome > 0 && (
           <span
             className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2"
@@ -64,18 +82,21 @@ function ROIForm({
         <div>
           <div className="d-flex justify-content-end mb-1">
             {goals.length > 0 && (
-              <div className="dropdown">
+              <div 
+                className="dropdown"
+                ref={dropdownRef}
+              >
                 <button
                   className="btn btn-sm btn-link text-decoration-none py-0 px-1 dropdown-toggle"
                   type="button"
-                  data-bs-toggle="dropdown"
+                  onClick={() => setShowDropdown(!showDropdown)}
                   style={{ fontSize: "0.75rem" }}
                 >
                   Auto-fill from Goal
                 </button>
                 <ul
-                  className="dropdown-menu dropdown-menu-end shadow-sm"
-                  style={{ fontSize: "0.85rem" }}
+                  className={`dropdown-menu dropdown-menu-end shadow-sm ${showDropdown ? "show" : ""}`}
+                  style={{ fontSize: "0.85rem", right: 0, left: "auto" }}
                 >
                   {goals.map((goal) => {
                     const needed = Math.max(
@@ -83,11 +104,14 @@ function ROIForm({
                       goal.targetAmount - goal.savedAmount,
                     );
                     return (
-                      <li key={goal._id}>
+                      <li key={goal.id || goal._id}>
                         <button
                           type="button"
                           className="dropdown-item d-flex justify-content-between"
-                          onClick={() => handleFillGoal(goal)}
+                          onClick={() => {
+                            handleFillGoal(goal);
+                            setShowDropdown(false);
+                          }}
                         >
                           <span>{goal.title}</span>
                           <span className="text-muted ms-3">
@@ -101,6 +125,7 @@ function ROIForm({
               </div>
             )}
           </div>
+
           <SliderInput
             label="Principal (RM)"
             value={principal}
@@ -122,6 +147,7 @@ function ROIForm({
         </div>
 
         <div>
+
           <SliderInput
             label="Annual Rate (%)"
             value={rate}
@@ -141,6 +167,7 @@ function ROIForm({
         </div>
 
         <div>
+
           <SliderInput
             label="Time (Years)"
             value={years}
@@ -163,6 +190,7 @@ function ROIForm({
           <label className="form-label small fw-semibold mb-2">
             Compounding Frequency
           </label>
+
           <SegmentedControl
             options={[
               { label: "Annually", value: 1 },
@@ -182,7 +210,6 @@ function ROIForm({
           )}
         </div>
 
-        {/* Calculate Button */}
         <button
           type="button"
           onClick={onCalculate}

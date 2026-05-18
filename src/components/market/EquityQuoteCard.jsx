@@ -1,11 +1,25 @@
 import { useMemo } from 'react'
 import { useEquityQuote } from '../../hooks/useEquityQuote'
+import { CURRENCY_SYMBOLS, CURRENCY_LABELS } from '../../utils/currencies'
 
-const formatPrice = (value) =>
-  value === undefined || value === null ? '—' : `$${value.toLocaleString()}`
-
-function EquityQuoteCard({ symbol, name, animationOrder = 0 }) {
+function EquityQuoteCard({ symbol, name, animationOrder = 0, currency = 'usd', rate = null }) {
   const { data, isLoading, isError, error } = useEquityQuote(symbol)
+
+  const sym = CURRENCY_SYMBOLS[currency] || '$'
+  const currencyLabel = CURRENCY_LABELS[currency] || 'USD'
+
+  const convert = (value) => {
+    if (value === undefined || value === null) return null
+    if (currency === 'usd' || !rate) return value
+    return value * rate
+  }
+
+  const formatPrice = (value) => {
+    const converted = convert(value)
+    if (converted === null || converted === undefined) return '\u2014'
+    const prefix = sym === 'RM' ? 'RM ' : sym
+    return `${prefix}${converted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  }
 
   const derived = useMemo(() => {
     if (!data) return null
@@ -44,7 +58,7 @@ function EquityQuoteCard({ symbol, name, animationOrder = 0 }) {
         style={{ '--animation-order': animationOrder }}
       >
         <div className="card-body d-flex flex-column justify-content-center text-center py-5">
-          <div className="fs-2 mb-2">⏳</div>
+          <div className="fs-2 mb-2">{'\u23f3'}</div>
           <h6 className="fw-semibold mb-2">
             {isRateLimited ? 'Rate limit reached' : 'Quote unavailable'}
           </h6>
@@ -72,12 +86,14 @@ function EquityQuoteCard({ symbol, name, animationOrder = 0 }) {
             </div>
           </div>
           <div className="text-end">
-            <div className="stat-value-sm">{formatPrice(data.c)}</div>
+            <div className="stat-value-sm">
+              {formatPrice(data.c)} <span className="badge text-bg-primary-subtle" style={{ fontSize: '0.65rem' }}>{currencyLabel}</span>
+            </div>
             <span
               className={`fw-semibold ${derived.isPositive ? 'text-success' : 'text-danger'}`}
               style={{ fontSize: '0.8rem' }}
             >
-              {derived.isPositive ? '▲' : '▼'} {Math.abs(derived.change).toFixed(2)} ({derived.changePercent.toFixed(2)}%)
+              {derived.isPositive ? '\u25b2' : '\u25bc'} {Math.abs(derived.change).toFixed(2)} ({derived.changePercent.toFixed(2)}%)
             </span>
           </div>
         </div>

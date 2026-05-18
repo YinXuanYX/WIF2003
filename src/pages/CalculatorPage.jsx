@@ -21,8 +21,7 @@ function calculateCompoundInterest(
 function CalculatorPage() {
   const [calculationResult, setCalculationResult] = useState(null);
 
-  // Context-aware data
-  const { data: goals = [] } = useGoals();
+  const { goals } = useGoals();
   const { disposableIncome } = useCashFlow();
 
   const handleCalculate = useCallback((data) => {
@@ -58,7 +57,6 @@ function CalculatorPage() {
       </div>
 
       <div className="row g-4">
-        {/* Input Form */}
         <div className="col-lg-4">
           <ROIForm
             goals={goals}
@@ -73,7 +71,6 @@ function CalculatorPage() {
           />
         </div>
 
-        {/* Results */}
         <div className="col-lg-8">
           <ROIResults
             hasCalculated={hasCalculated}
@@ -85,7 +82,6 @@ function CalculatorPage() {
           />
         </div>
 
-        {/* Comparison Tool */}
         <div className="col-12">
           <InvestmentComparison
             hasCalculated={hasCalculated}

@@ -32,7 +32,7 @@ function getSuggestions(targetAmount, remaining) {
  */
 function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
   const {
-    _id,
+    id,
     title,
     targetAmount,
     savedAmount,
@@ -40,7 +40,7 @@ function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
     progressPercent,
     requiredMonthlySaving,
     monthsRemaining,
-    remaining,
+    remainingAmount,
     isCompleted,
   } = goal
 
@@ -82,20 +82,20 @@ function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [showQuickSave])
 
-  const suggestions = getSuggestions(targetAmount, remaining)
+  const suggestions = getSuggestions(targetAmount, remainingAmount)
 
   const handleQuickSaveSubmit = () => {
     const amount = parseFloat(quickAmount)
     if (!amount || amount <= 0) return
     const newSaved = Math.min(savedAmount + amount, targetAmount)
-    onQuickSave?.(_id, newSaved)
+    onQuickSave?.(id, newSaved)
     setShowQuickSave(false)
     setQuickAmount('')
   }
 
   const handleSuggestionClick = (amount) => {
     const newSaved = Math.min(savedAmount + amount, targetAmount)
-    onQuickSave?.(_id, newSaved)
+    onQuickSave?.(id, newSaved)
     setShowQuickSave(false)
     setQuickAmount('')
   }
@@ -206,7 +206,7 @@ function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
             <div className="quick-save__header">
               <span className="quick-save__label">💵 Add Savings</span>
               <span className="text-muted small">
-                RM {remaining.toLocaleString()} remaining
+                RM {remainingAmount.toLocaleString()} remaining
               </span>
             </div>
 
@@ -220,7 +220,7 @@ function GoalCard({ goal, animationOrder = 0, onEdit, onDelete, onQuickSave }) {
                   placeholder="Enter amount"
                   step="0.01"
                   min="0"
-                  max={remaining}
+                  max={remainingAmount}
                   value={quickAmount}
                   onChange={(e) => setQuickAmount(e.target.value)}
                   onKeyDown={handleKeyDown}

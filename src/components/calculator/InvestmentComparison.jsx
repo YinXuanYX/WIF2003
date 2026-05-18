@@ -15,17 +15,18 @@ function calculateCompoundInterest(principal, ratePercent, years, compoundingFre
   return principal * Math.pow(1 + r / n, n * t)
 }
 
-function InvestmentComparison({ hasCalculated, principal, years, compounding, animationOrder = 2 }) {
+function InvestmentComparison({ principal, years, compounding, animationOrder = 2 }) {
   const [rates, setRates] = useState({
     fd: DEFAULT_VEHICLES[0].defaultRate,
     ut: DEFAULT_VEHICLES[1].defaultRate,
     if: DEFAULT_VEHICLES[2].defaultRate,
   })
 
-  // Calculate values for each vehicle
+  // calculate future value, profit, and ROI for each vehicle
+  // recalculate when rate or years or principal or compounding changes
   const results = DEFAULT_VEHICLES.map(vehicle => {
     const rate = rates[vehicle.id]
-    // Make sure principal and years are valid numbers
+    // make sure principal and years are valid numbers
     const validPrincipal = Number(principal) || 0
     const validYears = Number(years) || 0
     
@@ -36,7 +37,7 @@ function InvestmentComparison({ hasCalculated, principal, years, compounding, an
     return { ...vehicle, rate, futureValue, profit, roi }
   })
 
-  // Find the winner
+  // determine which investment option provides the highest return
   const bestVehicleId = results.length > 0 && Number(principal) > 0
     ? results.reduce((best, current) => current.futureValue > best.futureValue ? current : best).id
     : null
@@ -62,7 +63,8 @@ function InvestmentComparison({ hasCalculated, principal, years, compounding, an
           <div key={res.id} className="col-md-4">
             <div 
               className="p-4 rounded-4 position-relative" 
-              style={{ 
+              style={{
+                // highlight the best investment option if any
                 background: bestVehicleId === res.id ? 'var(--nav-active-bg)' : 'rgba(150, 150, 150, 0.05)',
                 border: bestVehicleId === res.id ? '1px solid var(--bs-primary)' : '1px solid rgba(150, 150, 150, 0.1)',
                 boxShadow: bestVehicleId === res.id ? '0 8px 24px rgba(37,99,235,0.1)' : 'none',
@@ -82,6 +84,7 @@ function InvestmentComparison({ hasCalculated, principal, years, compounding, an
                 <span className="fw-bold fs-5">{res.name}</span>
               </div>
 
+              {/* rate slider */}
               <div className="mb-4">
                 <SliderInput
                   label="Expected Annual Rate"
@@ -94,6 +97,7 @@ function InvestmentComparison({ hasCalculated, principal, years, compounding, an
                 />
               </div>
 
+              {/* show future value and total roi */}
               <div className="pt-3 border-top" style={{ borderColor: 'rgba(150,150,150,0.1)' }}>
                 <div className="d-flex justify-content-between mb-2">
                   <span className="text-muted small">Future Value</span>

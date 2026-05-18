@@ -1,14 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
 import { marketApi } from '../utils/api'
 
-const normalizeSymbol = (symbol) => (symbol ? symbol.toUpperCase() : 'AAPL')
-
-export const useEquityQuote = (symbol = 'AAPL') => {
-  const normalizedSymbol = normalizeSymbol(symbol)
-
+export const useMarketNews = (category = 'general') => {
   return useQuery({
-    queryKey: ['market', 'equityQuote', normalizedSymbol],
-    queryFn: () => marketApi.getEquityQuote(normalizedSymbol),
+    queryKey: ['market', 'news', category],
+    queryFn: () => marketApi.getMarketNews(category),
     staleTime: 5 * 60 * 1000,
     gcTime: 10 * 60 * 1000,
     retry: (failureCount, error) =>

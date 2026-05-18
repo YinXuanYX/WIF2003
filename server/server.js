@@ -8,6 +8,8 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import cashFlowRoutes from './routes/cashFlowRoutes.js';
+import marketRoutes from './routes/marketRoutes.js';
+import goalRoutes from './routes/goalRoutes.js';
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.use(cookieParser());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/cashflow', cashFlowRoutes);
+app.use('/api/market', marketRoutes);
+app.use('/api/goals', goalRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: `Route not found: ${req.method} ${req.originalUrl}` });
