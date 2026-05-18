@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useCashFlow } from '../hooks/useCashFlow'
-import { useGoalCalculations } from '../hooks/useGoalCalculations'
-import useGoalsStore from '../stores/useGoalsStore'
+import { useGoals } from '../hooks/useGoals'
 import GoalCard from '../components/goals/GoalCard'
 import GoalSkeleton from '../components/goals/GoalSkeleton'
 import GoalFormModal from '../components/goals/GoalFormModal'
@@ -11,11 +10,16 @@ import GoalWarningBanner from '../components/goals/GoalWarningBanner'
 import GoalLimitWarning from '../components/goals/GoalLimitWarning'
 
 function GoalsPage() {
-  const { data: cashflow, isLoading: cashflowLoading, disposableIncome, isEmptyState } = useCashFlow()
-  const goals = useGoalsStore((s) => s.goals)
-  const addGoal = useGoalsStore((s) => s.addGoal)
-  const updateGoal = useGoalsStore((s) => s.updateGoal)
-  const deleteGoal = useGoalsStore((s) => s.deleteGoal)
+  const { isLoading: cashflowLoading, isEmptyState } = useCashFlow()
+  const {
+    goals,
+    summary,
+    isLoading: goalsLoading,
+    createGoal,
+    updateGoal,
+    quickSave,
+    deleteGoal,
+  } = useGoals()
 
   // Modal state
   const [showFormModal, setShowFormModal] = useState(false)
@@ -27,17 +31,15 @@ function GoalsPage() {
   const [dismissedOverextend, setDismissedOverextend] = useState(false)
   const [dismissedLimit, setDismissedLimit] = useState(false)
 
-  const {
-    isNewUser,
-    enrichedGoals,
-    totalTargetAmount,
-    totalSavedAmount,
-    overallProgress,
-    totalRequiredMonthly,
-    isOverextended,
-    hasGoalLimitWarning,
-    goalCount,
-  } = useGoalCalculations(goals, disposableIncome, isEmptyState)
+  const isNewUser = !cashflowLoading && isEmptyState
+  const isOverextended = summary?.warningFlag ?? false
+  const hasGoalLimitWarning = summary?.exceedsRecommendedGoalLimit ?? false
+  const goalCount = summary?.totalGoals ?? 0
+  const totalSavedAmount = summary?.totalSavedAmount ?? 0
+  const totalTargetAmount = summary?.totalTargetAmount ?? 0
+  const totalRequiredMonthly = summary?.totalRequiredMonthlySaving ?? 0
+  const disposableIncome = summary?.disposableIncome ?? 0
+  const overallProgress = summary?.overallProgress ?? 0
 
   // Re-show dismissed warnings when the underlying data changes
   useEffect(() => {
@@ -66,9 +68,9 @@ function GoalsPage() {
 
   const handleFormSubmit = (data) => {
     if (editingGoal) {
-      updateGoal(editingGoal._id, data)
+      updateGoal({ id: editingGoal.id, ...data })
     } else {
-      addGoal(data)
+      createGoal(data)
     }
   }
 
@@ -77,11 +79,11 @@ function GoalsPage() {
   }
 
   const handleQuickSave = (id, newSavedAmount) => {
-    updateGoal(id, { savedAmount: newSavedAmount })
+    quickSave({ id, savedAmount: newSavedAmount })
   }
 
-  // Show skeleton while cashflow is loading
-  if (cashflowLoading) {
+  // Show skeleton while loading
+  if (cashflowLoading || goalsLoading) {
     return (
       <div className="container-fluid px-4 py-4">
         <div className="goals-header mb-4 animate-fade-in-up">
@@ -168,8 +170,8 @@ function GoalsPage() {
         </div>
       ) : (
         <div className="row g-4 mb-4">
-          {enrichedGoals.map((goal, i) => (
-            <div key={goal._id} className="col-lg-4 col-md-6">
+          {goals.map((goal, i) => (
+            <div key={goal.id} className="col-lg-4 col-md-6">
               <GoalCard
                 goal={goal}
                 animationOrder={i}
@@ -186,7 +188,7 @@ function GoalsPage() {
       {goalCount > 0 && (
         <div
           className="goal-summary animate-fade-in-up"
-          style={{ '--animation-order': enrichedGoals.length + 1 }}
+          style={{ '--animation-order': goals.length + 1 }}
         >
           <div className="goal-summary__row mb-3">
             <div className="goal-summary__item">

@@ -24,10 +24,6 @@ const goalSchema = z
       .min(0, 'Saved amount cannot be negative'),
     targetDate: z.string().min(1, 'Target date is required'),
   })
-  .refine((data) => data.savedAmount <= data.targetAmount, {
-    message: 'Saved amount cannot exceed target amount',
-    path: ['savedAmount'],
-  })
   .refine(
     (data) => {
       const target = new Date(data.targetDate)

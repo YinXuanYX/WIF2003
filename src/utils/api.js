@@ -73,3 +73,17 @@ export const marketApi = {
   getMarketNews: (category = 'general') =>
     request(`/market/news?category=${category}`),
 };
+
+export const goalsApi = {
+  getAll: () => request('/goals'),
+  getOne: (id) => request(`/goals/${id}`),
+  create: (body) =>
+    request('/goals', { method: 'POST', body: JSON.stringify(body) }),
+  update: (id, body) =>
+    request(`/goals/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  quickSave: (id, savedAmount) =>
+    request(`/goals/${id}/save`, { method: 'PATCH', body: JSON.stringify({ savedAmount }) }),
+  remove: (id) =>
+    request(`/goals/${id}`, { method: 'DELETE' }),
+};
+

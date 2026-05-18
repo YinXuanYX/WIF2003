@@ -15,7 +15,6 @@ function ROIForm({
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef(null);
 
-  // close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -42,13 +41,11 @@ function ROIForm({
     mode: "onChange",
   });
 
-  // watch for changes in form fields
   const principal = watch("principal");
   const rate = watch("rate");
   const years = watch("years");
   const compounding = watch("compounding");
 
-  // calculate ROI when form data is submitted
   const onCalculate = handleSubmit((formData) => {
     onChange({
       principal: Number(formData.principal),
@@ -58,7 +55,6 @@ function ROIForm({
     });
   });
 
-  // fill goal amount into principal field
   const handleFillGoal = (goal) => {
     const amountNeeded = Math.max(0, goal.targetAmount - goal.savedAmount);
     setValue("principal", amountNeeded, { shouldValidate: true });
@@ -72,7 +68,6 @@ function ROIForm({
           Investment Details
         </h6>
 
-        {/* show user's disposable income if available */}
         {disposableIncome > 0 && (
           <span
             className="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 rounded-pill px-2"
@@ -86,7 +81,6 @@ function ROIForm({
       <div className="flex-grow-1 d-flex flex-column gap-4">
         <div>
           <div className="d-flex justify-content-end mb-1">
-            {/* show auto-fill dropdown from goals if goals are available */}
             {goals.length > 0 && (
               <div 
                 className="dropdown"
@@ -110,7 +104,7 @@ function ROIForm({
                       goal.targetAmount - goal.savedAmount,
                     );
                     return (
-                      <li key={goal._id}>
+                      <li key={goal.id || goal._id}>
                         <button
                           type="button"
                           className="dropdown-item d-flex justify-content-between"
@@ -132,7 +126,6 @@ function ROIForm({
             )}
           </div>
 
-          {/* principal slider */}
           <SliderInput
             label="Principal (RM)"
             value={principal}
@@ -155,7 +148,6 @@ function ROIForm({
 
         <div>
 
-          {/* annual rate slider */}
           <SliderInput
             label="Annual Rate (%)"
             value={rate}
@@ -176,7 +168,6 @@ function ROIForm({
 
         <div>
 
-          {/* time slider */}
           <SliderInput
             label="Time (Years)"
             value={years}
@@ -200,7 +191,6 @@ function ROIForm({
             Compounding Frequency
           </label>
 
-          {/* compounding segmented control */}
           <SegmentedControl
             options={[
               { label: "Annually", value: 1 },
@@ -220,7 +210,6 @@ function ROIForm({
           )}
         </div>
 
-        {/* calculate button */}
         <button
           type="button"
           onClick={onCalculate}
