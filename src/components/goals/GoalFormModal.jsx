@@ -3,13 +3,6 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 
-/**
- * Zod validation schema for goal form.
- * - title: 1–50 characters
- * - targetAmount: must be > 0
- * - savedAmount: must be >= 0 and <= targetAmount
- * - targetDate: must be a future date
- */
 const goalSchema = z
   .object({
     title: z
@@ -37,15 +30,6 @@ const goalSchema = z
     }
   )
 
-/**
- * Bootstrap modal for Create & Edit goal.
- * Uses react-hook-form + Zod for validation.
- *
- * @param {boolean} show - Whether modal is visible
- * @param {function} onClose - Close handler
- * @param {function} onSubmit - Submit handler receiving form data
- * @param {object|null} editGoal - Goal to edit (null = create mode)
- */
 function GoalFormModal({ show, onClose, onSubmit, editGoal = null }) {
   const isEditMode = Boolean(editGoal)
   const backdropRef = useRef(null)

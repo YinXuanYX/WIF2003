@@ -1,13 +1,5 @@
 import { useEffect, useRef } from 'react'
 
-/**
- * Confirmation dialog before deleting a goal.
- *
- * @param {boolean} show - Whether modal is visible
- * @param {function} onClose - Close handler
- * @param {function} onConfirm - Confirm delete handler
- * @param {object|null} goal - Goal to delete
- */
 function DeleteConfirmModal({ show, onClose, onConfirm, goal }) {
   const backdropRef = useRef(null)
 

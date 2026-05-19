@@ -1,9 +1,5 @@
 import { useMemo } from 'react'
 
-/**
- * Calculates the number of full months between now and a target date.
- * Returns at least 1 to avoid division-by-zero.
- */
 function getMonthsRemaining(targetDate) {
   const now = new Date()
   const target = new Date(targetDate)
@@ -13,14 +9,6 @@ function getMonthsRemaining(targetDate) {
   return Math.max(months, 1)
 }
 
-/**
- * Pure calculation hook — derives planning metrics from goals + cashflow.
- *
- * @param {Array} goals - Array of goal objects from useGoalsStore
- * @param {number} disposableIncome - Disposable income from useCashFlow()
- * @param {boolean} isEmptyState - Whether the user has no income set
- * @returns {Object} Derived metrics for the Goals page
- */
 export function useGoalCalculations(goals = [], disposableIncome = 0, isEmptyState = false) {
   return useMemo(() => {
     // New-user empty state: no income set at all

@@ -1,12 +1,5 @@
 import { Link } from 'react-router-dom'
 
-/**
- * Empty state prompt displayed when useCashFlow() returns the new-user
- * empty state (disposableIncome: 0 and netIncome: 0).
- *
- * Directs the user to set up their cash flow baseline first.
- * Goal creation is explicitly disabled in this state.
- */
 function GoalEmptyState() {
   return (
     <div className="goal-empty-state animate-fade-in-up">
