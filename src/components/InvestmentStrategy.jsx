@@ -119,6 +119,7 @@ export default function InvestmentStrategy() {
   const {
     data: riskProfile,
     isLoading,
+    error,
     submitAssessment,
     resetProfile,
   } = useInvestmentProfile();
@@ -135,8 +136,9 @@ export default function InvestmentStrategy() {
 
   const isComplete = answeredCount === QUESTIONS.length;
   const currentQuestion = QUESTIONS[currentStep];
+  const isLastStep = currentStep === QUESTIONS.length - 1;
   const isStepAnswered = currentQuestion
-    ? answers[currentQuestion.id] !== undefined
+    ? Object.prototype.hasOwnProperty.call(answers, currentQuestion.id)
     : false;
   const progressValue = showWizard
     ? Math.min(currentStep + 1, QUESTIONS.length)
@@ -145,6 +147,12 @@ export default function InvestmentStrategy() {
 
   const handleAnswer = (questionId, value) => {
     setAnswers((prev) => ({ ...prev, [questionId]: value }));
+
+    if (isLoading || questionId !== currentQuestion?.id) return;
+
+    if (currentStep < QUESTIONS.length - 1) {
+      setCurrentStep((prev) => Math.min(prev + 1, QUESTIONS.length - 1));
+    }
   };
 
   const handleStart = () => {
@@ -163,15 +171,15 @@ export default function InvestmentStrategy() {
     setCurrentStep((prev) => prev - 1);
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!isStepAnswered || isLoading) return;
 
     if (currentStep < QUESTIONS.length - 1) {
-      setCurrentStep((prev) => prev + 1);
+      setCurrentStep((prev) => Math.min(prev + 1, QUESTIONS.length - 1));
       return;
     }
     if (!isComplete) return;
-    submitAssessment(answers);
+    await submitAssessment(answers);
     setShowCongrats(true);
     setCelebrate(true);
   };
@@ -191,6 +199,11 @@ export default function InvestmentStrategy() {
     const timeoutId = setTimeout(() => setCelebrate(false), 5000);
     return () => clearTimeout(timeoutId);
   }, [celebrate]);
+
+  useEffect(() => {
+    if (currentStep <= QUESTIONS.length - 1) return;
+    setCurrentStep(QUESTIONS.length - 1);
+  }, [currentStep]);
 
   const hasProfile = Boolean(riskProfile?.profile);
   const canReset = answeredCount > 0 || hasProfile;
@@ -296,6 +309,12 @@ export default function InvestmentStrategy() {
                     />
                   </div>
 
+                  {error && (
+                    <div className="alert alert-danger py-2 mb-3" role="alert">
+                      {error.message || "Failed to save assessment. Please try again."}
+                    </div>
+                  )}
+
                   <div className="strategy-wizard-actions">
                     <button
                       type="button"
@@ -320,10 +339,10 @@ export default function InvestmentStrategy() {
                         onClick={handleNext}
                         disabled={!isStepAnswered || isLoading}
                       >
-                        {currentStep === QUESTIONS.length - 1
+                        {isLastStep
                           ? isLoading
                             ? <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Analyzing...</>
-                            : <>Finish <i className="bi bi-check-lg ms-2"></i></>
+                            : <>Complete Survey <i className="bi bi-check-lg ms-2"></i></>
                           : <>Next <i className="bi bi-arrow-right ms-2"></i></>}
                       </button>
                     </div>

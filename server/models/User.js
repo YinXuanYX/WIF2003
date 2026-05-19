@@ -56,6 +56,11 @@ userSchema.methods.comparePassword = async function (candidatePassword) {
 userSchema.methods.toSafeObject = function () {
   const obj = this.toObject();
   delete obj.passwordHash;
+
+  if (!obj.riskProfile || obj.riskProfile.profile === undefined) {
+    obj.riskProfile = { profile: null };
+  }
+
   return obj;
 };
 

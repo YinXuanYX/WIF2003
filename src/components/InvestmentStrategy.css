@@ -180,6 +180,11 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 12px;
+  position: sticky;
+  bottom: 0;
+  background: var(--bs-card-bg, #fff);
+  padding-top: 0.75rem;
+  z-index: 1;
 }
 
 .strategy-link-btn {
