@@ -87,3 +87,7 @@ export const goalsApi = {
     request(`/goals/${id}`, { method: 'DELETE' }),
 };
 
+export const investmentApi = {
+  submitProfile: (body) =>
+    request('/investment/profile', { method: 'POST', body: JSON.stringify(body) }),
+};
