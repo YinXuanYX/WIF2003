@@ -1,5 +1,7 @@
 import { calculatorSchema } from './src/schemas/calculator.schema.js';
 
+/* global process */
+
 function calculateCompoundInterest(principal, ratePercent, years, compoundingFrequency) {
   const r = ratePercent / 100;
   const n = compoundingFrequency;
@@ -71,6 +73,7 @@ function assertMoney(actual, expected, message) {
 const testGroups = [
   {
     id: 'UT-06-01',
+    title: 'Compound Interest Calculation Logic',
     module: 'CalculatorPage.jsx - calculateCompoundInterest()',
     description:
       'Validates that the compound interest formula calculates future investment value correctly.',
@@ -106,13 +109,14 @@ const testGroups = [
   },
   {
     id: 'UT-06-02',
+    title: 'Calculator Input Validation',
     module: 'calculator.schema.js',
     description: 'Validates calculator inputs using the Zod validation schema.',
     preconditions: 'Validation schema is loaded successfully.',
     testData: 'Principal, rate, years, and compounding values',
     cases: [
       {
-        description: 'Principal = 10,000',
+        description: 'Principal = 10000',
         expected: 'Input accepted',
         run: () => {
           const result = calculatorSchema.safeParse({ principal: 10000, rate: 5, years: 10, compounding: 1 });
@@ -179,10 +183,11 @@ const testGroups = [
   },
   {
     id: 'UT-06-03',
-    module: 'ROIForm.jsx - handleFillGoal()',
+    title: 'Goal Auto-Fill Calculation Logic',
+    module: 'ROIForm.jsx - Goal Auto-Fill Calculation Logic',
     description:
-      'Validates calculation of the remaining amount required to achieve a financial goal.',
-    preconditions: 'User has at least one financial goal record.',
+      'Validates the business logic used to calculate the remaining amount required to achieve a financial goal.',
+    preconditions: 'Goal object contains valid targetAmount and savedAmount values.',
     testData: 'Goal target amount and saved amount',
     cases: [
       {
@@ -199,6 +204,7 @@ const testGroups = [
   },
   {
     id: 'UT-06-04',
+    title: 'Investment Comparison Calculation Logic',
     module: 'InvestmentComparison.jsx',
     description: 'Validates investment comparison calculations using default vehicle rates.',
     preconditions: 'Principal, years, and compounding frequency are provided.',
@@ -248,6 +254,7 @@ const testGroups = [
   },
   {
     id: 'UT-06-05',
+    title: 'Investment Comparison Boundary Logic',
     module: 'InvestmentComparison.jsx',
     description:
       'Validates boundary handling for investment comparison business logic.',
@@ -296,7 +303,8 @@ let passed = 0;
 let failed = 0;
 
 testGroups.forEach((group) => {
-  console.log(`\n${group.id}: ${group.module}`);
+  console.log(`\n${group.id}: ${group.title ?? group.module}`);
+  console.log(`Module/Function: ${group.module}`);
   console.log(`Description: ${group.description}`);
   console.log(`Preconditions: ${group.preconditions}`);
   console.log(`Test Data: ${group.testData}`);
