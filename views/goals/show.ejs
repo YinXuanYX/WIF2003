@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title><%= goal.title %></title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <h1><%= goal.title %></h1>
+  <p>Target: RM <%= goal.targetAmount.toLocaleString() %></p>
+  <p>Saved: RM <%= goal.savedAmount.toLocaleString() %></p>
+  <p>Deadline: <%= goal.targetDate %></p>
+  <p>Progress: <%= goal.progressPercent %>%</p>
+
+  <% if (goal.isCompleted) { %>
+    <div class="alert alert-success">Goal Achieved</div>
+  <% } else { %>
+    <div class="alert alert-info">In Progress</div>
+  <% } %>
+
+  <a href="/goals">← Back to My Goals</a>
+</body>
+</html>

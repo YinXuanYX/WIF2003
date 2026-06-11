@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>My Goals</title>
+  <link rel="stylesheet" href="/app.css" />
+</head>
+<body>
+  <h1>My Goals</h1>
+  <ul>
+    <% goals.forEach(function(goal) { %>
+      <li>
+        <a href="/goals/<%= goal.id %>"><%= goal.title %></a>
+        — RM <%= goal.savedAmount.toLocaleString() %> / RM <%= goal.targetAmount.toLocaleString() %>
+        <% if (goal.isCompleted) { %>
+          <span class="badge badge-success">Goal Achieved</span>
+        <% } else { %>
+          <span class="badge badge-pending">Pending</span>
+        <% } %>
+      </li>
+    <% }); %>
+  </ul>
+</body>
+</html>
