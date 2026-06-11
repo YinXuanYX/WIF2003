@@ -1,0 +1,35 @@
+Database Type:
+MongoDB
+
+Database Dump Folder:
+db-dump
+
+Exported Databases:
+- financial_planning
+
+Main Database Used by Application:
+financial_planning
+
+Collections:
+- users
+- cashflows
+- goals
+
+Connection Type:
+MongoDB Atlas
+
+Connection URI:
+mongodb+srv://wif2003_app:Gfy8zoFBo12A0yh9@webdev.jm1u2be.mongodb.net/financial_planning?retryWrites=true&w=majority&appName=WebDev
+
+Username:
+wif2003_app
+
+Password:
+Gfy8zoFBo12A0yh9
+
+Restore Command (via mongoimport):
+mongoimport --uri="mongodb+srv://wif2003_app:Gfy8zoFBo12A0yh9@webdev.jm1u2be.mongodb.net/financial_planning" --collection=users --file=db-dump/users.json --jsonArray --drop
+mongoimport --uri="mongodb+srv://wif2003_app:Gfy8zoFBo12A0yh9@webdev.jm1u2be.mongodb.net/financial_planning" --collection=cashflows --file=db-dump/cashflows.json --jsonArray --drop
+mongoimport --uri="mongodb+srv://wif2003_app:Gfy8zoFBo12A0yh9@webdev.jm1u2be.mongodb.net/financial_planning" --collection=goals --file=db-dump/goals.json --jsonArray --drop
+
+
