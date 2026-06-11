@@ -1,11 +1,4 @@
-// ============================================================
-// market.test.js — Module 5: Market Insights & Analysis
-// WIF2003 Personal Financial Planning System · Team 04
-// ============================================================
-// Run:  node market.test.js
-// ============================================================
 
-// --- Imports ---
 import { validationResult } from 'express-validator';
 import {
   validateCryptoChart,
@@ -18,14 +11,8 @@ import CURRENCY_CONFIG, {
   CURRENCY_LIST,
   CURRENCY_OPTIONS,
 } from './src/utils/currencies.js';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-// --- TestHelpers ---
 function assertEqual(actual, expected, message) {
   if (actual !== expected) {
     throw new Error(`${message}. Expected ${expected}, received ${actual}`);
@@ -46,7 +33,7 @@ function assertMoney(actual, expected, message) {
   assertEqual(money(actual), money(expected), message);
 }
 
-// --- ReplicatedPureFunctions ---
+
 
 function computeConversions(rates, sourceCurrency, parsedAmount, currencyConfigKeys) {
   if (!rates || !rates[sourceCurrency]) return null;
@@ -93,20 +80,7 @@ function resolveTrendViewState(isLoading, isError, data) {
   return 'chart';
 }
 
-function resolveMarketPageProps(currency, rates) {
-  return {
-    cryptoChart: { currency },
-    equityCard1: { currency, rate: rates?.[currency] ?? null },
-    equityCard2: { currency, rate: rates?.[currency] ?? null },
-    converterCard: { rates },
-  };
-}
 
-function resolveConverterViewState(rates) {
-  return rates === null ? 'skeleton' : 'loaded';
-}
-
-// --- MockRequestHelper(express-validatorisolation) ---
 function mockReq({ params = {}, query = {}, body = {} } = {}) {
   return { params, query, body };
 }
@@ -123,10 +97,10 @@ async function runValidation(chain, reqOpts) {
 
 const SERVER_ALLOWED = ['usd', 'eur', 'gbp', 'jpy', 'myr', 'sgd'];
 
-// UNIT TEST GROUPS
+
 
 const unitTestGroups = [
-  // ── UT-05-01 ─────────────────────────────────────────────
+
   {
     id: 'UT-05-01',
     module: 'CurrencyConverterCard.jsx — conversions memo',
@@ -182,7 +156,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-05-02 ─────────────────────────────────────────────
+
   {
     id: 'UT-05-02',
     module: 'CurrencyConverterCard.jsx — formatConverted()',
@@ -231,7 +205,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-05-03 ─────────────────────────────────────────────
+
   {
     id: 'UT-05-03',
     module: 'useMarketChart.js — normalizeDaysKey()',
@@ -268,7 +242,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-05-04 ─────────────────────────────────────────────
+
   {
     id: 'UT-05-04',
     module: 'marketValidators.js — validator chains in isolation',
@@ -375,7 +349,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-05-05 ─────────────────────────────────────────────
+
   {
     id: 'UT-05-05',
     module: 'currencies.js — configuration structural integrity',
@@ -424,7 +398,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-05-06 ─────────────────────────────────────────────
+
   {
     id: 'UT-05-06',
     module: 'MarketTrendsCard.jsx — priceChange / changePercent / isPositive',
@@ -484,225 +458,7 @@ const unitTestGroups = [
   },
 ];
 
-// FUNCTIONAL TEST GROUPS — Pure Logic (no server needed)
 
-const functionalPureGroups = [
-  // ── FT-05-04 ─────────────────────────────────────────────
-  {
-    id: 'FT-05-04',
-    module: 'MarketInsightsPage.jsx — currency view-state transition',
-    description:
-      'Verifies CurrencySelector value fans out to CryptoChart, EquityQuoteCard, CurrencyConverterCard.',
-    preconditions: 'Pure function replication of prop wiring.',
-    testData: 'currency + rates combinations',
-    cases: [
-      {
-        description: 'currency = "usd", rates present → all props populated',
-        expected: 'cryptoChart.currency = "usd", equityCard.rate = 1',
-        run: () => {
-          const props = resolveMarketPageProps('usd', { usd: 1, myr: 4.47, eur: 0.92 });
-          assertEqual(props.cryptoChart.currency, 'usd', 'Crypto chart currency');
-          assertEqual(props.equityCard1.rate, 1, 'Equity card rate');
-          assertTrue(props.converterCard.rates !== null, 'Converter should have rates');
-        },
-      },
-      {
-        description: 'currency = "myr" → rate changes to 4.47',
-        expected: 'equityCard.rate = 4.47',
-        run: () => {
-          const props = resolveMarketPageProps('myr', { usd: 1, myr: 4.47, eur: 0.92 });
-          assertEqual(props.cryptoChart.currency, 'myr', 'Crypto chart currency should be myr');
-          assertEqual(props.equityCard1.rate, 4.47, 'Equity card rate should be 4.47');
-        },
-      },
-      {
-        description: 'rates = null → equityCard.rate = null (null-safe via ??)',
-        expected: 'equityCard.rate = null',
-        run: () => {
-          const props = resolveMarketPageProps('jpy', null);
-          assertEqual(props.equityCard1.rate, null, 'Rate should be null when rates is null');
-        },
-      },
-    ],
-  },
-
-  // ── FT-05-05 ─────────────────────────────────────────────
-  {
-    id: 'FT-05-05',
-    module: 'MarketTrendsCard.jsx — fallback view-state routing',
-    description:
-      'Verifies skeleton → fallback → chart view state transitions.',
-    preconditions: 'Pure function replication of branching.',
-    testData: 'isLoading / isError / data combinations',
-    cases: [
-      {
-        description: 'isLoading: true → skeleton',
-        expected: 'skeleton',
-        run: () => assertEqual(resolveTrendViewState(true, false, null), 'skeleton', 'Loading → skeleton'),
-      },
-      {
-        description: 'isError: true → fallback',
-        expected: 'fallback',
-        run: () => assertEqual(resolveTrendViewState(false, true, null), 'fallback', 'Error → fallback'),
-      },
-      {
-        description: 'Empty prices array → fallback',
-        expected: 'fallback',
-        run: () =>
-          assertEqual(
-            resolveTrendViewState(false, false, { prices: [] }),
-            'fallback',
-            'Empty prices → fallback',
-          ),
-      },
-      {
-        description: 'Valid prices → chart',
-        expected: 'chart',
-        run: () =>
-          assertEqual(
-            resolveTrendViewState(false, false, { prices: [[0, 50000], [1, 51000]] }),
-            'chart',
-            'Valid prices → chart',
-          ),
-      },
-    ],
-  },
-
-  // ── FT-05-06 ─────────────────────────────────────────────
-  {
-    id: 'FT-05-06',
-    module: 'CurrencyConverterCard.jsx — loading view state',
-    description:
-      'Verifies skeleton vs loaded state based on rates prop.',
-    preconditions: 'Pure function replication of branching.',
-    testData: 'rates: null | object',
-    cases: [
-      {
-        description: 'rates = null → skeleton',
-        expected: 'skeleton',
-        run: () => assertEqual(resolveConverterViewState(null), 'skeleton', 'Null rates → skeleton'),
-      },
-      {
-        description: 'rates = { usd: 1, myr: 4.47 } → loaded',
-        expected: 'loaded',
-        run: () =>
-          assertEqual(resolveConverterViewState({ usd: 1, myr: 4.47 }), 'loaded', 'Rates present → loaded'),
-      },
-    ],
-  },
-];
-
-// ── IT-05-02 + IT-05-03 (static file checks — no server needed) ──
-const integrationStaticGroups = [
-  {
-    id: 'IT-05-02',
-    module: 'Shared market cache — CryptoChart ↔ MarketTrendsCard',
-    description:
-      'Verifies React Query cache key consistency.',
-    preconditions: 'Source files readable from project root.',
-    testData: 'File contents of useMarketChart.js, CryptoChart.jsx, MarketTrendsCard.jsx',
-    cases: [
-      {
-        description: 'useMarketChart.js uses query key ["market", coinId, normalizedKey, currency]',
-        expected: 'queryKey pattern found in source',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/hooks/useMarketChart.js'), 'utf-8');
-          assertTrue(
-            content.includes("queryKey: ['market', coinId, normalizedKey, currency]"),
-            'useMarketChart should use queryKey: [\'market\', coinId, normalizedKey, currency]',
-          );
-        },
-      },
-      {
-        description: 'CryptoChart imports useMarketChart',
-        expected: 'Import path present',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/components/market/CryptoChart.jsx'), 'utf-8');
-          assertTrue(
-            content.includes("from '../../hooks/useMarketChart'"),
-            'CryptoChart should import from ../../hooks/useMarketChart',
-          );
-        },
-      },
-      {
-        description: 'MarketTrendsCard imports useMarketChart',
-        expected: 'Import path present — same hook, same cache at default state',
-        run: () => {
-          const content = fs.readFileSync(
-            join(__dirname, 'src/components/dashboard/MarketTrendsCard.jsx'),
-            'utf-8',
-          );
-          assertTrue(
-            content.includes("from '../../hooks/useMarketChart'"),
-            'MarketTrendsCard should import from ../../hooks/useMarketChart',
-          );
-        },
-      },
-      {
-        description: 'staleTime check',
-        expected: 'staleTime: 5 * 60 * 1000 found',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/hooks/useMarketChart.js'), 'utf-8');
-          assertTrue(
-            content.includes('staleTime: 5 * 60 * 1000'),
-            'staleTime should be 5 * 60 * 1000',
-          );
-        },
-      },
-    ],
-  },
-
-  // ── IT-05-03 ─────────────────────────────────────────────
-  {
-    id: 'IT-05-03',
-    module: 'Rate-limit signal → client retry flow',
-    description:
-      'Verifies retry policies.',
-    preconditions: 'Source files readable.',
-    testData: 'File contents of useEquityQuote.js, useMarketNews.js',
-    cases: [
-      {
-        description: 'useEquityQuote retry conditional logic',
-        expected: 'Retry pattern found in source',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/hooks/useEquityQuote.js'), 'utf-8');
-          assertTrue(
-            content.includes('error?.status === 429') && content.includes('failureCount < 1'),
-            'useEquityQuote should have retry conditional on status 429 && failureCount < 1',
-          );
-        },
-      },
-      {
-        description: 'useEquityQuote retryDelay',
-        expected: 'retryDelay: 60 * 1000 pattern found',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/hooks/useEquityQuote.js'), 'utf-8');
-          assertTrue(
-            content.includes('60 * 1000'),
-            'useEquityQuote retryDelay should include 60 * 1000',
-          );
-        },
-      },
-      {
-        description: 'useMarketNews retry policy',
-        expected: 'Same retry pattern found',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/hooks/useMarketNews.js'), 'utf-8');
-          assertTrue(
-            content.includes('error?.status === 429') && content.includes('failureCount < 1'),
-            'useMarketNews should have same retry policy as useEquityQuote',
-          );
-          assertTrue(
-            content.includes('60 * 1000'),
-            'useMarketNews retryDelay should include 60 * 1000',
-          );
-        },
-      },
-    ],
-  },
-];
-
-// TEST RUNNER
 
 async function runGroups(groups) {
   let passed = 0;
@@ -732,37 +488,19 @@ async function runGroups(groups) {
   return { passed, failed };
 }
 
-console.log('========== Module 5 Testing: Market Insights & Analysis ==========');
+console.log('========== Module 5 Unit Testing: Market Insights & Analysis ==========');
 
-let totalPassed = 0;
-let totalFailed = 0;
-
-// 1. Unit tests (always run — no server dependency)
 console.log('\n────────── UNIT TESTS ──────────');
 const unitResult = await runGroups(unitTestGroups);
-totalPassed += unitResult.passed;
-totalFailed += unitResult.failed;
 
-// 2. Pure functional tests (no server dependency)
-console.log('\n────────── FUNCTIONAL TESTS (Pure Logic) ──────────');
-const pureFnResult = await runGroups(functionalPureGroups);
-totalPassed += pureFnResult.passed;
-totalFailed += pureFnResult.failed;
 
-// 3. Static integration tests (file-text checks, no server)
-console.log('\n────────── INTEGRATION TESTS (Static File Check) ──────────');
-const staticResult = await runGroups(integrationStaticGroups);
-totalPassed += staticResult.passed;
-totalFailed += staticResult.failed;
+console.log('\n========== Unit Test Summary ==========');
+console.log(`Total Test Cases Run: ${unitResult.passed + unitResult.failed}`);
+console.log(`Total Passed: ${unitResult.passed}`);
+console.log(`Total Failed: ${unitResult.failed}`);
 
-// Summary
-console.log('\n========== Module 5 Test Summary ==========');
-console.log(`Total Test Cases Run: ${totalPassed + totalFailed}`);
-console.log(`Total Passed: ${totalPassed}`);
-console.log(`Total Failed: ${totalFailed}`);
-
-if (totalFailed > 0) {
+if (unitResult.failed > 0) {
   process.exit(1);
 }
 
-console.log('\nAll Module 5 tests passed.');
+console.log('\nAll Module 5 unit tests passed.');

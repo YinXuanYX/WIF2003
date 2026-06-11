@@ -1,11 +1,4 @@
-// ============================================================
-// cashflow.test.js — Module 2: Cash Flow & Budget Baseline
-// WIF2003 Personal Financial Planning System · Team 04
-// ============================================================
-// Run:  node cashflow.test.js
-// ============================================================
 
-// --- Imports ---
 import { incomeSchema, expenseSchema } from './src/schemas/cashflow.schema.js';
 import { validationResult } from 'express-validator';
 import {
@@ -14,14 +7,8 @@ import {
 } from './server/validators/cashFlowValidators.js';
 import mongoose from 'mongoose';
 import CashFlow from './server/models/CashFlow.js';
-import fs from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 
-// --- TestHelpers ---
 function assertEqual(actual, expected, message) {
   if (actual !== expected) {
     throw new Error(`${message}. Expected ${expected}, received ${actual}`);
@@ -50,7 +37,6 @@ function assertDeepEqual(actual, expected, message) {
   }
 }
 
-// --- ReplicatedPureFunctions ---
 
 function computeTotalExpenses(expenses) {
   return (expenses ?? []).reduce((sum, e) => sum + e.amount, 0);
@@ -100,22 +86,7 @@ function buildCashFlowResponse(cashFlowDoc) {
   };
 }
 
-function resolveViewState(isLoading, isEmptyState) {
-  if (isLoading) return 'skeleton';
-  if (isEmptyState) return 'empty';
-  return 'populated';
-}
 
-function deriveSummaryState(netIncome, totalExpenses, disposableIncome) {
-  const expenseRatio = netIncome > 0 ? (totalExpenses / netIncome) * 100 : 0;
-  const isOverBudget = disposableIncome < 0;
-  const isHighSpend = expenseRatio >= 80;
-  const progressBarWidth = Math.min(expenseRatio, 100);
-  const displayedPercent = Math.min(expenseRatio, 100).toFixed(1);
-  return { expenseRatio, isOverBudget, isHighSpend, progressBarWidth, displayedPercent };
-}
-
-// --- MockRequestHelper(express-validatorisolation) ---
 function mockReq(body = {}, params = {}) {
   return { body, params, query: {} };
 }
@@ -130,10 +101,9 @@ async function runValidation(chain, body, params) {
   return validationResult(req);
 }
 
-// UNIT TEST GROUPS
 
 const unitTestGroups = [
-  // ── UT-02-01 ─────────────────────────────────────────────
+
   {
     id: 'UT-02-01',
     module: 'useCashFlow.js — totalExpenses / disposableIncome memos',
@@ -190,7 +160,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-02-02 ─────────────────────────────────────────────
+
   {
     id: 'UT-02-02',
     module: 'cashflow.schema.js — incomeSchema',
@@ -244,7 +214,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-02-03 ─────────────────────────────────────────────
+
   {
     id: 'UT-02-03',
     module: 'cashflow.schema.js — expenseSchema',
@@ -325,7 +295,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-02-04 ─────────────────────────────────────────────
+
   {
     id: 'UT-02-04',
     module: 'cashflow.schema.js ↔ cashFlowValidators.js ↔ CashFlow model',
@@ -402,7 +372,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-02-05 ─────────────────────────────────────────────
+
   {
     id: 'UT-02-05',
     module: 'useCashFlow.js — isEmptyState; cashFlowController.js — isNewUser',
@@ -467,7 +437,7 @@ const unitTestGroups = [
     ],
   },
 
-  // ── UT-02-06 ─────────────────────────────────────────────
+
   {
     id: 'UT-02-06',
     module: 'useCashFlow.js — onMutate / onError / onSuccess',
@@ -492,7 +462,7 @@ const unitTestGroups = [
         run: () => {
           const previous = { netIncome: 5000, isNewUser: true, expenses: [] };
           const mutated = applyIncomeOptimistic(previous, 8000);
-          // Simulate rollback: restore previous
+
           assertDeepEqual(previous, { netIncome: 5000, isNewUser: true, expenses: [] }, 'Previous should be unchanged');
           assertTrue(mutated.netIncome !== previous.netIncome, 'Mutated differs from previous');
         },
@@ -551,162 +521,6 @@ const unitTestGroups = [
   },
 ];
 
-// FUNCTIONAL TEST GROUPS — Pure Logic (no server needed)
-
-const functionalPureGroups = [
-  // ── FT-02-05 ─────────────────────────────────────────────
-  {
-    id: 'FT-02-05',
-    module: 'CashFlowPage.jsx — view state branching',
-    description:
-      'Verifies page view state branching.',
-    preconditions: 'Pure function replication of component branching.',
-    testData: 'isLoading / isEmptyState combinations',
-    cases: [
-      {
-        description: 'isLoading: true → skeleton',
-        expected: 'skeleton',
-        run: () => assertEqual(resolveViewState(true, false), 'skeleton', 'Loading should show skeleton'),
-      },
-      {
-        description: 'isEmptyState: true → empty',
-        expected: 'empty',
-        run: () => assertEqual(resolveViewState(false, true), 'empty', 'Empty state should show empty'),
-      },
-      {
-        description: 'Neither loading nor empty → populated',
-        expected: 'populated',
-        run: () => assertEqual(resolveViewState(false, false), 'populated', 'Should show populated'),
-      },
-      {
-        description: '"Get Started" seeds transition: updateIncome(0) → isNewUser false',
-        expected: 'netIncome = 0, isNewUser = false',
-        run: () => {
-          const old = { netIncome: 0, isNewUser: true, expenses: [] };
-          const result = applyIncomeOptimistic(old, 0);
-          assertEqual(result.isNewUser, false, 'isNewUser should flip to false after Get Started');
-        },
-      },
-    ],
-  },
-
-  // ── FT-02-06 ─────────────────────────────────────────────
-  {
-    id: 'FT-02-06',
-    module: 'CashFlowSummary.jsx — derived summary state',
-    description:
-      'Verifies derived summary state.',
-    preconditions: 'Pure function replication of component derivation.',
-    testData: 'netIncome / totalExpenses / disposableIncome combinations',
-    cases: [
-      {
-        description: 'Healthy budget (35.3% expense ratio)',
-        expected: 'isOverBudget: false, isHighSpend: false',
-        run: () => {
-          const s = deriveSummaryState(8500, 3000, 5500);
-          assertMoney(s.expenseRatio, 35.29, 'Expense ratio mismatch');
-          assertEqual(s.isOverBudget, false, 'Should not be over budget');
-          assertEqual(s.isHighSpend, false, 'Should not be high spend');
-        },
-      },
-      {
-        description: 'High spend (84% ≥ 80%)',
-        expected: 'isHighSpend: true, isOverBudget: false',
-        run: () => {
-          const s = deriveSummaryState(5000, 4200, 800);
-          assertEqual(s.expenseRatio, 84, 'Expense ratio should be 84');
-          assertEqual(s.isHighSpend, true, 'Should flag high spend');
-          assertEqual(s.isOverBudget, false, 'Should not be over budget');
-        },
-      },
-      {
-        description: 'Over budget (negative disposable)',
-        expected: 'isOverBudget: true',
-        run: () => {
-          const s = deriveSummaryState(3000, 4000, -1000);
-          assertEqual(s.isOverBudget, true, 'Should be over budget');
-        },
-      },
-      {
-        description: 'Zero income guard',
-        expected: 'expenseRatio = 0',
-        run: () => {
-          const s = deriveSummaryState(0, 0, 0);
-          assertEqual(s.expenseRatio, 0, 'Zero income should produce 0 ratio');
-        },
-      },
-      {
-        description: 'RM formatting check — no data loss',
-        expected: '123,456',
-        run: () => {
-          const formatted = (123456).toLocaleString();
-          assertTrue(formatted.includes('123'), 'Formatted should contain 123');
-          assertTrue(formatted.includes('456'), 'Formatted should contain 456');
-        },
-      },
-      {
-        description: 'Progress bar + text clamping: ratio 150% → bar and text both clamped to 100',
-        expected: 'expenseRatio = 150, progressBarWidth = 100, displayedPercent = "100.0"',
-        run: () => {
-          const s = deriveSummaryState(3000, 4500, -1500);
-          assertEqual(s.expenseRatio, 150, 'Raw ratio should be 150');
-          assertEqual(s.progressBarWidth, 100, 'Bar width should be clamped to 100');
-          assertEqual(s.displayedPercent, '100.0', 'Displayed percent should be clamped to "100.0"');
-          assertEqual(s.isOverBudget, true, 'Should be over budget');
-        },
-      },
-    ],
-  },
-];
-
-// ── IT-02-03 (static file check — no server needed) ────────
-const integrationStaticGroups = [
-  {
-    id: 'IT-02-03',
-    module: 'Shared cache aggregation — CashFlowPage ↔ CashFlowCard',
-    description:
-      'Verifies cache key consistency.',
-    preconditions: 'Source files readable from project root.',
-    testData: 'File contents of useCashFlow.js, CashFlowPage.jsx, CashFlowCard.jsx',
-    cases: [
-      {
-        description: 'useCashFlow.js declares QUERY_KEY = [\'cashflow\']',
-        expected: 'String match found',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/hooks/useCashFlow.js'), 'utf-8');
-          assertTrue(
-            content.includes("const QUERY_KEY = ['cashflow']"),
-            'useCashFlow.js should declare QUERY_KEY = [\'cashflow\']',
-          );
-        },
-      },
-      {
-        description: 'CashFlowPage.jsx imports useCashFlow from the shared hook',
-        expected: 'Import path present',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/pages/CashFlowPage.jsx'), 'utf-8');
-          assertTrue(
-            content.includes("from '../hooks/useCashFlow'"),
-            'CashFlowPage should import from ../hooks/useCashFlow',
-          );
-        },
-      },
-      {
-        description: 'CashFlowCard.jsx imports useCashFlow from the same shared hook',
-        expected: 'Import path present — same hook, same QUERY_KEY',
-        run: () => {
-          const content = fs.readFileSync(join(__dirname, 'src/components/dashboard/CashFlowCard.jsx'), 'utf-8');
-          assertTrue(
-            content.includes("from '../../hooks/useCashFlow'"),
-            'CashFlowCard should import from ../../hooks/useCashFlow',
-          );
-        },
-      },
-    ],
-  },
-];
-
-// TEST RUNNER
 
 async function runGroups(groups) {
   let passed = 0;
@@ -736,39 +550,21 @@ async function runGroups(groups) {
   return { passed, failed };
 }
 
-console.log('========== Module 2 Testing: Cash Flow & Budget Baseline ==========');
+console.log('========== Module 2 Unit Testing: Cash Flow & Budget Baseline ==========');
 
-let totalPassed = 0;
-let totalFailed = 0;
-
-// 1. Unit tests (always run — no server dependency)
 console.log('\n────────── UNIT TESTS ──────────');
 const unitResult = await runGroups(unitTestGroups);
-totalPassed += unitResult.passed;
-totalFailed += unitResult.failed;
 
-// 2. Pure functional tests (no server dependency)
-console.log('\n────────── FUNCTIONAL TESTS (Pure Logic) ──────────');
-const pureFnResult = await runGroups(functionalPureGroups);
-totalPassed += pureFnResult.passed;
-totalFailed += pureFnResult.failed;
 
-// 3. Static integration test (file-text checks, no server)
-console.log('\n────────── INTEGRATION TESTS (Static File Check) ──────────');
-const staticResult = await runGroups(integrationStaticGroups);
-totalPassed += staticResult.passed;
-totalFailed += staticResult.failed;
+console.log('\n========== Unit Test Summary ==========');
+console.log(`Total Test Cases Run: ${unitResult.passed + unitResult.failed}`);
+console.log(`Total Passed: ${unitResult.passed}`);
+console.log(`Total Failed: ${unitResult.failed}`);
 
-// Summary
-console.log('\n========== Module 2 Test Summary ==========');
-console.log(`Total Test Cases Run: ${totalPassed + totalFailed}`);
-console.log(`Total Passed: ${totalPassed}`);
-console.log(`Total Failed: ${totalFailed}`);
-
-if (totalFailed > 0) {
+if (unitResult.failed > 0) {
   process.exit(1);
 }
 
-console.log('\nAll Module 2 tests passed.');
-// Disconnect mongoose to let Node exit cleanly
+console.log('\nAll Module 2 unit tests passed.');
+
 await mongoose.disconnect().catch(() => {});
