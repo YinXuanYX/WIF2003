@@ -3,9 +3,6 @@
 
 describe('Module 5: Investment Strategy Module', () => {
 
-    // ----------------------------------------------------
-    // Core Engine Logic Under Test
-    // ----------------------------------------------------
     function scoreToProfile(score) {
         if (score < 0 || score > 30 || typeof score !== 'number' || !Number.isInteger(score)) {
             throw new Error(`Invalid score: ${score}. Must be between 0 and 30.`);
@@ -25,9 +22,7 @@ describe('Module 5: Investment Strategy Module', () => {
         return { bonds: 10, equities: 80, cash: 10 };
     }
 
-    // ========================================================
-    // 1. UNIT TESTING (UT)
-    // ========================================================
+
     describe('1. Unit Testing - Score Boundaries & Allocations', () => {
         
         test('UT-05-01: score=10 should be Conservative, score=11 should be Moderate', () => {
@@ -59,12 +54,9 @@ describe('Module 5: Investment Strategy Module', () => {
         });
     });
 
-    // ========================================================
-    // 2. FUNCTIONAL TESTING (FT-01 to FT-07)
-    // ========================================================
+
     describe('2. Functional Testing - End-to-End Component Flow Simulation', () => {
-        
-        // FT-05-01: Verifies successful rendering state assembly for Conservative profile
+
         test('FT-05-01: Verify rendering state compilation for Conservative score (Score 5)', () => {
             const p = scoreToProfile(5);
             const a = getProfileAllocation(p);
@@ -73,7 +65,6 @@ describe('Module 5: Investment Strategy Module', () => {
             expect(state.props.data.bonds).toBe(60);
         });
 
-        // FT-05-02: Verifies successful rendering state assembly for Moderate profile
         test('FT-05-02: Verify rendering state compilation for Moderate score (Score 15)', () => {
             const p = scoreToProfile(15);
             const a = getProfileAllocation(p);
@@ -82,7 +73,7 @@ describe('Module 5: Investment Strategy Module', () => {
             expect(state.props.data.equities).toBe(50);
         });
 
-        // FT-05-03: Verifies successful rendering state assembly for Aggressive profile
+
         test('FT-05-03: Verify rendering state compilation for Aggressive score (Score 25)', () => {
             const p = scoreToProfile(25);
             const a = getProfileAllocation(p);
@@ -91,7 +82,6 @@ describe('Module 5: Investment Strategy Module', () => {
             expect(state.props.data.equities).toBe(80);
         });
 
-        // FT-05-04: Simulates UI tab switching behavior between profiles
         test('FT-05-04: Simulate UI strategy tab switching state updates smoothly', () => {
             let activeTab = 'Conservative';
             expect(getProfileAllocation(activeTab).bonds).toBe(60);
@@ -100,7 +90,6 @@ describe('Module 5: Investment Strategy Module', () => {
             expect(getProfileAllocation(activeTab).bonds).toBe(10);
         });
 
-        // FT-05-05: Simulates the component view reset and clearing payload memory
         test('FT-05-05: Simulate user UI clear/reset action flushes state memory data', () => {
             const UIState = { hasCalculated: true, allocationData: getProfileAllocation('Moderate') };
             expect(UIState.allocationData.cash).toBe(10);
@@ -110,20 +99,18 @@ describe('Module 5: Investment Strategy Module', () => {
             expect(UIState.allocationData).toBeNull();
         });
 
-        // FT-05-06: Verifies conditional high-risk warnings for Aggressive profiles
         test('FT-05-06: Verify that conditional warning flags trigger for high equity risk allocations', () => {
             const allocation = getProfileAllocation('Aggressive');
             const showHighRiskWarning = allocation.equities > 70;
             expect(showHighRiskWarning).toBe(true);
         });
 
-        // FT-05-07: Verifies safety fallback layout matching when engine encounters unexpected errors
         test('FT-05-07: Verify UI fallback layout state triggers cleanly upon calculation error intercept', () => {
             let UIErrorState = null;
             let renderComponent = 'StrategyDisplay';
 
             try {
-                scoreToProfile(-5); // Triggers runtime error
+                scoreToProfile(-5); 
             } catch (err) {
                 UIErrorState = err.message;
                 renderComponent = 'FallbackErrorWidget';
